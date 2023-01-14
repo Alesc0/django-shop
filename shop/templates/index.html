@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home
+{% endblock title %}
+
+{% block content %}
+{% include 'navbar.html' %}
+<main class="container">
+    <div class="row">
+    {% for product in products %}
+    <div class="col-md-3">
+        <h2>{{ product.name }}</h2>
+        <p>{{ product.description }}</p>
+        <p>{{ product.price }}</p>
+        <a href="/product/{{ product.id }}">View</a>
+    </div>
+    {% endfor %}
+    </div>
+</main>
+{% endblock content %}
