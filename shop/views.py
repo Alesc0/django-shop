@@ -7,16 +7,21 @@ import shop.mongo_handler as MongoHandler
 from django.contrib.auth import logout as auth_logout
 
 import shop.forms as forms
+import shop.utils
 
 def index(request):
     products = MongoHandler.list_products()
-    return render(request, 'index.html',context={'products':products})
+    return render(request, 'index.html',context={'products': products})
 
 def logout(request):
     auth_logout(request)
     return render(request, 'index.html')
 
 def admin(request):
+    if not request.user.is_authenticated:
+        return redirect("/login")
+    if not request.user.is_superuser:
+        return redirect("/")
     users = MongoHandler.list_users()
     products = MongoHandler.list_products()
     return render(request, 'admin.html',context={'users':users, 'products':products})
@@ -55,3 +60,13 @@ def register(request):
     form = forms.registerForm()
     return render (request, "register.html", context={"form":form})
 
+def addProduct(request):
+    if request.method == "POST":
+        form = forms.addProductForm(request.POST)
+        if form.is_valid():
+            MongoHandler.create_product(form.cleaned_data['name'],form.cleaned_data['price'],form.cleaned_data['description'])
+            messages.success(request, "Product added successfully." )
+            return redirect ("/")
+        messages.error(request, "Unsuccessful product addition. Invalid information.")
+    form = forms.addProductForm()
+    return render (request, "product.html", context={"form":form})

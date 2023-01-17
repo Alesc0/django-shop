@@ -1,15 +1,19 @@
 {% load static %}
-<html>
+<html data-theme="light">
   <head>
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-    <link
+    {% comment %} <link
       href="{% static 'bootstrap/css/bootstrap.min.css' %}"
       rel="stylesheet"
+    /> {% endcomment %}
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css"
     />
-    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    {% comment %} <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script> {% endcomment %}
   </head>
-  <body>
+  <body style="width:80%;margin:0 auto">
     {% include 'messages.html' %} {% block content %} {% endblock %}
   </body>
 </html>

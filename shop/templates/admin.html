@@ -7,44 +7,34 @@ Admin
 {% block content %}
 {% include 'navbar.html' %}
 <main class="container">
-    <div class="accordion" id="accordion1">
-        <div class="accordion-item">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
-                    Users
-                </button>
-            </h2>
-            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordion1">
-                <div class="accordion-body">
-                    {% for user in users %}
-                    <div>
-                        <h2>{{ user.username }}</h2>
-                        <p>{{ user.email }}</p>
-                    </div>
-                    {% endfor %}
-                    </div>
-                </div>
-            </div>
+    <details>
+        <summary role="button">
+            Users
+        </summary>
+        {% for user in users %}
+        <div>
+            <h2>{{ user.username }}</h2>
+            <p>{{ user.email }}</p>
         </div>
-        <div class="accordion-item">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
-                    Produtos
-                </button>
-            </h2>
-            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordion1">
-                <div class="accordion-body">
-                    {% for product in products %}
-                    <div>
-                        <h2>{{ product.name }}</h2>
-                        <p>{{ product.description }}</p>
-                        <p>{{ product.price }}</p>
-                    </div>
-                    {% endfor %}
-                    </div>
-                </div>
-            </div>
+        {% endfor %}
         </div>
+    </details>
+    <details>
+        <summary role="button">
+            Produtos
+        </summary>
+        <div>
+            <a href="/addProduct">Add Product</a>
+        </div>
+        {% for product in products %}
+        <div>
+            <h2>{{ product.name }}</h2>
+            <p>{{ product.description }}</p>
+            <p>{{ product.price }}</p>
+        </div>
+        {% endfor %}
+        </div>
+    </details>
     </div>
 </main>
 {% endblock content %}

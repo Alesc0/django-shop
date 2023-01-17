@@ -1,25 +1,26 @@
 {% load static %}
 
-<div class="container">
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/">Lojinha</a>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item" {% if request.path == '/' %} class="nav-item active" {% endif %} >
-        <a class="nav-link" href="/">Home</span></a>
-      </li>
-      {% if request.user.is_superuser %}
-      <li class="nav-item" {% if request.path == '/admin' %} class="nav-item active" {% endif %}>
-        <a class="nav-link"  href="admin" >Admin</a>
-      </li>
-      {% endif %}
-    </ul>
-    {% if request.user.is_authenticated %}
-    <span class="nav-item" style="margin-left:auto"><a href="logout" >Logout</a></span>
-    {% else %}
-    <span class="nav-item active"><a href="login" >Login</a></span>
+<nav>
+  <ul>
+    <li><strong>Lojinha</strong></li>
+  </ul>
+  <ul>
+    <li {% if request.path == '/' %} class="active" {% endif %}>
+      <a class="nav-link" href="/">Home</span></a>
+    </li>
+    {% if request.user.is_superuser %}
+    <li {% if request.path == '/admin' %} class="active" {% endif %}>
+      <a class="nav-link" href="admin">Admin</a>
+    </li>
     {% endif %}
-  </div>
+  </ul>
+  {% if request.user.is_authenticated %}
+  <li style="margin-left:auto">
+    <a href="logout">Logout</a>
+  </li>
+  {% else %}
+  <li style="margin-left:auto">
+    <a href="login">Login</a>
+  </li>
+  {% endif %}
 </nav>
-</div>
