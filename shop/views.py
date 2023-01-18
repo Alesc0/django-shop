@@ -44,6 +44,8 @@ def logIn(request):
 
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect("/")
     if request.method == "POST":
         form = forms.registerForm(request.POST)
         if form.is_valid():
@@ -70,3 +72,25 @@ def addProduct(request):
         messages.error(request, "Unsuccessful product addition. Invalid information.")
     form = forms.addProductForm()
     return render (request, "product.html", context={"form":form})
+
+def addUser(request):
+    if request.method == "POST":
+        form = forms.customUserForm(request.POST)
+        if form.is_valid():
+            user = User.objects.create_user(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
+            user.save()
+            MongoHandler.create_user(user.id,user.username,form.cleaned_data['email'],form.cleaned_data['type'])
+            messages.success(request, "User added successfully." )
+            return redirect ("/admin")
+        messages.error(request, "Unsuccessful user addition. Invalid information.")
+    form = forms.customUserForm()
+    return render (request, "addUser.html", context={"form":form})
+
+def cart(request,id=None):
+    if not request.user.is_authenticated:
+        return redirect("/login")
+    if id is not None:
+        print(id, file=sys.stderr)
+        return redirect("/")
+    cart = MongoHandler.get_cart(request.user.id)
+    return render(request, 'cart.html',context={'cart': cart})

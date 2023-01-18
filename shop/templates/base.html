@@ -3,15 +3,11 @@
   <head>
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-    {% comment %} <link
-      href="{% static 'bootstrap/css/bootstrap.min.css' %}"
-      rel="stylesheet"
-    /> {% endcomment %}
+    <script src="{% static "js/jquery-3.6.3.min.js" %}"></script>
     <link
       rel="stylesheet"
       href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css"
     />
-    {% comment %} <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script> {% endcomment %}
   </head>
   <body style="width:80%;margin:0 auto">
     {% include 'messages.html' %} {% block content %} {% endblock %}

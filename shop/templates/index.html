@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load private %}
 {% block title %}
 Home
 {% endblock title %}
@@ -8,11 +8,13 @@ Home
 {% include 'navbar.html' %}
 <main class="container">
     <div class="grid-custom">
+       
         {% for product in products %}
         <article style="margin:0">
             <header>{{ product.name }}</header>
             <p>{{ product.description }}</p>
             <p>{{ product.price }}€</p>
+            <a href="/cart/{{ product|private:'_id' }}">Add to cart</a>
         </article>
         {% endfor %}
     </div>
