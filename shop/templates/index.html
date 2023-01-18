@@ -1,22 +1,17 @@
-{% extends 'base.html' %}
-{% load private %}
-{% block title %}
-Home
-{% endblock title %}
-
-{% block content %}
-{% include 'navbar.html' %}
+{% extends 'base.html' %} {% load private %} {% load static %} {% block title %}
+Home {% endblock title %} {% block content %} {% include 'navbar.html' %}
 <main class="container">
-    <div class="grid-custom">
-       
-        {% for product in products %}
-        <article style="margin:0">
-            <header>{{ product.name }}</header>
-            <p>{{ product.description }}</p>
-            <p>{{ product.price }}€</p>
-            <a href="/cart/{{ product|private:'_id' }}">Add to cart</a>
-        </article>
-        {% endfor %}
-    </div>
+  <div class="grid-custom">
+    {% for product in products %}
+    <article style="margin: 0">
+      <header>{{ product.name }}</header>
+      <p>{{ product.description }}</p>
+      <p>{{ product.price }}€</p>
+      <button class="addCart" id="{{ product|private:'_id' }}">Add to cart</button>
+    </article>
+    {% endfor %}
+  </div>
 </main>
+
+<script src="{% static 'js/addToCart.js' %}"></script>
 {% endblock content %}

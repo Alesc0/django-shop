@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 import shop.mongo_handler as MongoHandler
 from django.contrib.auth import logout as auth_logout
-
+from django.http import HttpResponse
 import shop.forms as forms
 import shop.utils
 
@@ -94,3 +94,10 @@ def cart(request,id=None):
         return redirect("/")
     cart = MongoHandler.get_cart(request.user.id)
     return render(request, 'cart.html',context={'cart': cart})
+
+def addToCart(request,id):
+    if not request.user.is_authenticated:
+        return redirect("/login")
+    if request.method == "POST":
+        print(request.POST, file=sys.stderr)
+    return HttpResponse("success")
