@@ -7,11 +7,15 @@ Home {% endblock title %} {% block content %} {% include 'navbar.html' %}
       <header>{{ product.name }}</header>
       <p>{{ product.description }}</p>
       <p>{{ product.price }}€</p>
-      <button class="addCart" id="{{ product|private:'_id' }}">Add to cart</button>
+      {% with getid=product|private:'_id'%}
+      <button class="addCart" id="{{ product|private:'_id' }}" {%if getid in cart%} disabled {%endif%}>
+        {%if getid in cart%} Already in cart {% else %} Add To Cart {%endif%}
+      </button>
+      {% endwith %}
     </article>
     {% endfor %}
   </div>
 </main>
-
 <script src="{% static 'js/addToCart.js' %}"></script>
+
 {% endblock content %}

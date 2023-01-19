@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class Cart_Item (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.IntegerField()
+    product = models.CharField(max_length=255)
     quantity = models.IntegerField()
 
 class Sales (models.Model):
@@ -13,5 +13,5 @@ class Sales (models.Model):
     date = models.DateTimeField()
 class Sales_Item (models.Model):
     sale = models.ForeignKey(Sales, on_delete=models.CASCADE)
-    product = models.IntegerField()
+    product = models.CharField(max_length=255)
     quantity = models.IntegerField()

@@ -3,15 +3,22 @@ from django.shortcuts import redirect, render
 from django.contrib.auth import login,authenticate
 from django.contrib import messages
 from django.contrib.auth.models import User
+from shop.models import Cart_Item
 import shop.mongo_handler as MongoHandler
 from django.contrib.auth import logout as auth_logout
 from django.http import HttpResponse
 import shop.forms as forms
-import shop.utils
 
 def index(request):
+    context = {}
     products = MongoHandler.list_products()
-    return render(request, 'index.html',context={'products': products})
+    context['products'] = products
+    if 'cart' in request.COOKIES:
+        cookie_cart = request.COOKIES['cart']
+        cart = cookie_cart.split(',')
+        print(cart, file=sys.stderr)
+        context['cart'] = cart
+    return render(request, 'index.html',context=context)
 
 def logout(request):
     auth_logout(request)
@@ -96,8 +103,19 @@ def cart(request,id=None):
     return render(request, 'cart.html',context={'cart': cart})
 
 def addToCart(request,id):
-    if not request.user.is_authenticated:
-        return redirect("/login")
-    if request.method == "POST":
-        print(request.POST, file=sys.stderr)
-    return HttpResponse("success")
+    response = HttpResponse() #maybe abstract cookies
+    if request.method == "GET":
+        print(id, file=sys.stderr)
+        if(request.user.is_authenticated):
+            """ cartItem = Cart_Item.objects.create(user=request.user,product=id,quantity=1)
+            cartItem.save() """
+            response.content="success" 
+        else:
+            if 'cart' in request.COOKIES:
+                cookie_cart = request.COOKIES['cart']
+                cookie_cart += "," + str(id)
+            else:
+                cookie_cart = str(id)
+            response.set_cookie('cart', cookie_cart, max_age=60*60*24*365*2)
+            response.content="success" 
+    return response
