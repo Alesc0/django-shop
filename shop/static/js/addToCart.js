@@ -6,6 +6,7 @@ $('button[class^="addCart"]').click(function (e) {
   }).done((response) => {
     if (response == "success") {
       $(this).prop("disabled", true);
+      $(this).html("Added to cart");
     }
   });
 });

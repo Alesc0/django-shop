@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% load private %} {% load static %} {% block title %}
+{% extends 'base.html' %} {% load templates %} {% load static %} {% block title %}
 Home {% endblock title %} {% block content %} {% include 'navbar.html' %}
 <main class="container">
   <div class="grid-custom">
@@ -8,8 +8,8 @@ Home {% endblock title %} {% block content %} {% include 'navbar.html' %}
       <p>{{ product.description }}</p>
       <p>{{ product.price }}€</p>
       {% with getid=product|private:'_id'%}
-      <button class="addCart" id="{{ product|private:'_id' }}" {%if getid in cart%} disabled {%endif%}>
-        {%if getid in cart%} Already in cart {% else %} Add To Cart {%endif%}
+      <button class="addCart" id="{{ product|private:'_id' }}" {%if product|private:'_id'|findInCart:cart %} disabled {%endif%}>
+        {%if product|private:'_id'|findInCart:cart %} Already in cart {% else %} Add To Cart {%endif%}
       </button>
       {% endwith %}
     </article>

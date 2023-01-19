@@ -3,6 +3,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth import login,authenticate
 from django.contrib import messages
 from django.contrib.auth.models import User
+import shop.cart as cartUtils
 from shop.models import Cart_Item
 import shop.mongo_handler as MongoHandler
 from django.contrib.auth import logout as auth_logout
@@ -13,16 +14,23 @@ def index(request):
     context = {}
     products = MongoHandler.list_products()
     context['products'] = products
-    if 'cart' in request.COOKIES:
-        cookie_cart = request.COOKIES['cart']
-        cart = cookie_cart.split(',')
-        print(cart, file=sys.stderr)
-        context['cart'] = cart
-    return render(request, 'index.html',context=context)
+    if(request.user.is_authenticated):
+        if(request.COOKIES.get('cart') is not None):
+            cartUtils.convertCart(request)
+            context['cart'] = cartUtils.getCart(request) 
+            response = render(request,"index.html",context=context)
+            response.delete_cookie('cart')
+            return response
+        """ cart = Cart_Item.objects.filter(user=request.user)
+        print(cart, file=sys.stderr) """
+        
+    context['cart'] = cartUtils.getCart(request)
+
+    return render(request,"index.html",context=context)
 
 def logout(request):
     auth_logout(request)
-    return render(request, 'index.html')
+    return redirect("/")
 
 def admin(request):
     if not request.user.is_authenticated:
@@ -97,25 +105,17 @@ def cart(request,id=None):
     if not request.user.is_authenticated:
         return redirect("/login")
     if id is not None:
-        print(id, file=sys.stderr)
         return redirect("/")
     cart = MongoHandler.get_cart(request.user.id)
     return render(request, 'cart.html',context={'cart': cart})
 
 def addToCart(request,id):
-    response = HttpResponse() #maybe abstract cookies
+    response = HttpResponse()
     if request.method == "GET":
-        print(id, file=sys.stderr)
-        if(request.user.is_authenticated):
-            """ cartItem = Cart_Item.objects.create(user=request.user,product=id,quantity=1)
-            cartItem.save() """
-            response.content="success" 
-        else:
-            if 'cart' in request.COOKIES:
-                cookie_cart = request.COOKIES['cart']
-                cookie_cart += "," + str(id)
-            else:
-                cookie_cart = str(id)
-            response.set_cookie('cart', cookie_cart, max_age=60*60*24*365*2)
-            response.content="success" 
+        res = cartUtils.addItem(request,id,1)
+        if res == None:
+            response.content = "success"
+        elif type(res) == str:
+            response.content = "success"
+            response.set_cookie('cart',res, max_age=60*60*24*365*2)
     return response
