@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load templates %}
 {% block title %}
 Admin
 {% endblock title %}
@@ -32,7 +32,7 @@ Admin
         {% for product in products %}
         <div>
             <h2>{{ product.name }}</h2>
-            <p>{{ product.description }}</p>
+            <p>{{ product.description|limitChars:255 }}</p>
             <p>{{ product.price }}</p>
         </div>
         {% endfor %}

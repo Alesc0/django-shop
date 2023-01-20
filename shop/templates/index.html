@@ -1,11 +1,13 @@
 {% extends 'base.html' %} {% load templates %} {% load static %} {% block title %}
 Home {% endblock title %} {% block content %} {% include 'navbar.html' %}
-<main class="container">
   <div class="grid-custom">
     {% for product in products %}
     <article style="margin: 0">
       <header>{{ product.name }}</header>
-      <p>{{ product.description }}</p>
+      <div style="margin:0">
+        <h5 style="margin:0">Description:</h5>
+        <p>{{ product.description|limitChars:100 }}</p>
+      </div>
       <p>{{ product.price }}€</p>
       {% with getid=product|private:'_id'%}
       <button class="addCart" id="{{ product|private:'_id' }}" {%if product|private:'_id'|findInCart:cart %} disabled {%endif%}>
@@ -15,7 +17,6 @@ Home {% endblock title %} {% block content %} {% include 'navbar.html' %}
     </article>
     {% endfor %}
   </div>
-</main>
 <script src="{% static 'js/addToCart.js' %}"></script>
 
 {% endblock content %}

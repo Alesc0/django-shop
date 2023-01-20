@@ -1,5 +1,9 @@
 import sys
 from django import template
+from shop.models import Cart_Item
+
+import shop.mongo_handler as MongoHandler
+
 
 register = template.Library()
 
@@ -21,3 +25,18 @@ def findInCart(product, cart):
             if item.product == product:
                 return True
         return False
+
+@register.filter(name='limitChars')
+def limitChars(string, limit):
+    if len(string) > limit:
+        return string[:limit] + '...'
+    else:
+        return string
+
+@register.filter(name='getProduct')
+def getProduct(product):
+    if type(product) == Cart_Item:
+        return  MongoHandler.get_product(product.product)    
+    product = product.split('-')
+    product = MongoHandler.get_product(product[0])
+    return product

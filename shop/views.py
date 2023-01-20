@@ -20,10 +20,7 @@ def index(request):
             context['cart'] = cartUtils.getCart(request) 
             response = render(request,"index.html",context=context)
             response.delete_cookie('cart')
-            return response
-        """ cart = Cart_Item.objects.filter(user=request.user)
-        print(cart, file=sys.stderr) """
-        
+            return response 
     context['cart'] = cartUtils.getCart(request)
 
     return render(request,"index.html",context=context)
@@ -101,12 +98,8 @@ def addUser(request):
     form = forms.customUserForm()
     return render (request, "addUser.html", context={"form":form})
 
-def cart(request,id=None):
-    if not request.user.is_authenticated:
-        return redirect("/login")
-    if id is not None:
-        return redirect("/")
-    cart = MongoHandler.get_cart(request.user.id)
+def cart(request):
+    cart = cartUtils.getCart(request)
     return render(request, 'cart.html',context={'cart': cart})
 
 def addToCart(request,id):

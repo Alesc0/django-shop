@@ -1,0 +1,8 @@
+{% load templates %}
+<div style="display:flex;flex-direction:row;align-items:center;gap:50px;">
+    {% with product_=product|getProduct %}
+    <h5>{{product_.name}}</h5>
+    <p><strong>{{product_.price}}€</strong></p>
+    <input style="max-width:100px" type="number" value={{product.quantity}} />
+    {% endwith %}
+</div>
