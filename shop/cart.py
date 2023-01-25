@@ -16,6 +16,39 @@ def addItem(request,product,quantity):
             cookie_cart = str(product) + "-" + str(quantity)
     return cookie_cart
 
+def removeItem(request,product):
+    if(request.user.is_authenticated):
+        cartItem = Cart_Item.objects.get(user=request.user,product=product)
+        cartItem.delete()
+        cookie_cart = None
+    else:
+        if 'cart' in request.COOKIES:
+            cookie_cart = request.COOKIES['cart']
+            cart = cookie_cart.split(',')
+            for item in cart:
+                item = item.split('-')
+                if(item[0] == str(product)):
+                    cart.remove(item[0] + "-" + item[1])
+            cookie_cart = ",".join(cart)
+    return cookie_cart
+
+def editItem(request,product,quantity):
+    if(request.user.is_authenticated):
+        cartItem = Cart_Item.objects.get(user=request.user,product=product)
+        cartItem.quantity = quantity
+        cookie_cart = None
+        cartItem.save()
+    else:
+        if 'cart' in request.COOKIES:
+            cookie_cart = request.COOKIES['cart']
+            cart = cookie_cart.split(',')
+            for item in cart:
+                item = item.split('-')
+                if(item[0] == str(product)):
+                    item[1] = quantity
+            cookie_cart = ",".join(cart)
+    return cookie_cart
+
 def getCart(request):
     if(request.user.is_authenticated):
         cartItems = Cart_Item.objects.filter(user=request.user)

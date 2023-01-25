@@ -36,7 +36,10 @@ def limitChars(string, limit):
 @register.filter(name='getProduct')
 def getProduct(product):
     if type(product) == Cart_Item:
-        return  MongoHandler.get_product(product.product)    
+        product_ = MongoHandler.get_product(product.product)
+        product_["quantity"] = product.quantity
+        return product_
     product = product.split('-')
-    product = MongoHandler.get_product(product[0])
-    return product
+    product_ = MongoHandler.get_product(product[0])
+    product_["quantity"] = product[1]
+    return product_

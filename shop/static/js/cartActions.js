@@ -10,3 +10,15 @@ $('button[class^="addCart"]').click(function (e) {
     }
   });
 });
+
+$('button[name^="removeFromCart"]').click(function (e) {
+  e.preventDefault();
+  $.ajax({
+    url: "removeFromCart/" + this.id,
+    type: "GET",
+  }).done((response) => {
+    if (response == "success") {
+      $(this).parent().remove();
+    }
+  });
+});

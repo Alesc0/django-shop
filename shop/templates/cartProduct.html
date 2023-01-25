@@ -3,6 +3,7 @@
     {% with product_=product|getProduct %}
     <h5>{{product_.name}}</h5>
     <p><strong>{{product_.price}}€</strong></p>
-    <input style="max-width:100px" type="number" value={{product.quantity}} />
+    <input style="max-width:100px" type="number" value={{product_.quantity}} />
+    <button id="{{product_|private:'_id'}}" name="removeFromCart" class="warning" style="width:fit-content">X</button>
     {% endwith %}
 </div>

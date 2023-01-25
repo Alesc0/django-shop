@@ -10,8 +10,10 @@
     />
   </head>
   <body style="width:80%;margin:0 auto">
-    {% include 'messages.html' %} {% block content %} {% endblock %}
+    {% include 'navbar.html' %}
     <main class="container">
+      {% block content %} {% endblock %}
     </main>
+    <script src="{% static "js/cartActions.js" %}"></script>
   </body>
 </html>

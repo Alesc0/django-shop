@@ -14,6 +14,7 @@ urlpatterns = [
     path('addUser', views.addUser, name='addUser'),
     path('cart', views.cart, name='cart'),
     path('addToCart/<id>', views.addToCart, name='addToCart'),
+    path('removeFromCart/<id>', views.removeFromCart, name='removeFromCart'),
 ]
 
 if settings.DEBUG:

@@ -1,12 +1,10 @@
-{% extends 'base.html' %} {% load templates %} {% load static %} {% block title %}
-Cart {% endblock title %} {% block content %} {% include 'navbar.html' %}
-  
-<div style="display:flex;flex-direction:column;padding:2em">
-    {% for product in cart %}
+{% extends 'base.html' %} {% load templates %} {% load static %}
+ {% block title%} Cart {% endblock title %} {% block content %}
+
+<div style="display: flex; flex-direction: column; padding: 2em">
+    {% for product in cart %} 
         {% include 'cartProduct.html' with product=product %}
     {% endfor %}
 </div>
-<button style="width:10em;margin-left:auto;">Checkout</button>
-<script src="{% static 'js/addToCart.js' %}"></script>
-
+<button style="width: 10em; margin-left: auto">Checkout</button>
 {% endblock content %}

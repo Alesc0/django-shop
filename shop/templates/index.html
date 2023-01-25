@@ -1,5 +1,5 @@
 {% extends 'base.html' %} {% load templates %} {% load static %} {% block title %}
-Home {% endblock title %} {% block content %} {% include 'navbar.html' %}
+Home {% endblock title %} {% block content %}
   <div class="grid-custom">
     {% for product in products %}
     <article class="product-card">
@@ -19,6 +19,6 @@ Home {% endblock title %} {% block content %} {% include 'navbar.html' %}
     </article>
     {% endfor %}
   </div>
-<script src="{% static 'js/addToCart.js' %}"></script>
+<script src="{% static 'js/cartActions.js' %}"></script>
 
 {% endblock content %}
