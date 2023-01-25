@@ -1,10 +1,15 @@
 {% extends 'base.html' %} {% load templates %} {% load static %}
  {% block title%} Cart {% endblock title %} {% block content %}
 
-<div style="display: flex; flex-direction: column; padding: 2em">
-    {% for product in cart %} 
+<div id="cart" style="display: flex; flex-direction: column; padding: 2em;width:fit-content;margin: 0 auto">
+    {% for product in cart %}
         {% include 'cartProduct.html' with product=product %}
     {% endfor %}
+    {% if cart|length == 0%}
+    Your cart is empty
+    {% endif %}
 </div>
-<button style="width: 10em; margin-left: auto">Checkout</button>
+{% if cart|length != 0 %}
+<button id="checkoutBtn" style="width: 10em; margin: 0 auto">Checkout</button>
+{% endif %}
 {% endblock content %}

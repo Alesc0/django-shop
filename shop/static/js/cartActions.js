@@ -19,6 +19,10 @@ $('button[name^="removeFromCart"]').click(function (e) {
   }).done((response) => {
     if (response == "success") {
       $(this).parent().remove();
+      if ($("div[class^='product']").length == 0) {
+        $("#cart").html("Your cart is empty");
+        $("#checkoutBtn").remove();
+      }
     }
   });
 });
