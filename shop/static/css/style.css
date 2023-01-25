@@ -1,5 +1,38 @@
-.grid-custom{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-gap: 10px;
+.grid-custom {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+}
+
+.product-card {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+.product-img {
+  height: 10em;
+  object-fit: fill;
+}
+
+.product-header{
+    margin-bottom: 0.5em;
+}
+
+.product-title {
+  font-weight: bold;
+  font-size: 25px;
+  margin-bottom: 0.5em;
+}
+
+.product-body {
+  flex: 1;
+  margin: 0;
+}
+
+.product-price {
+  font-weight: bold;
+  font-size: 28px;
+  margin-top: auto;
+  margin-left: auto;
+  width: fit-content;
 }

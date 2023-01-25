@@ -21,3 +21,4 @@ class addProductForm(forms.Form):
     name = forms.CharField()
     price = forms.IntegerField()
     description = forms.CharField(widget=forms.Textarea)
+    image = forms.ImageField()

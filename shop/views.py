@@ -9,6 +9,8 @@ import shop.mongo_handler as MongoHandler
 from django.contrib.auth import logout as auth_logout
 from django.http import HttpResponse
 import shop.forms as forms
+from django.core.files.storage import FileSystemStorage
+import uuid
 
 def index(request):
     context = {}
@@ -76,9 +78,13 @@ def register(request):
 
 def addProduct(request):
     if request.method == "POST":
-        form = forms.addProductForm(request.POST)
+        form = forms.addProductForm(request.POST,request.FILES)
+        img = request.FILES['image']
         if form.is_valid():
-            MongoHandler.create_product(form.cleaned_data['name'],form.cleaned_data['price'],form.cleaned_data['description'])
+            fss = FileSystemStorage()
+            upload_name = str(uuid.uuid4())
+            fss.save(upload_name + ".jpg", img)
+            MongoHandler.create_product(form.cleaned_data['name'],form.cleaned_data['price'],form.cleaned_data['description'],upload_name)
             messages.success(request, "Product added successfully." )
             return redirect ("/")
         messages.error(request, "Unsuccessful product addition. Invalid information.")

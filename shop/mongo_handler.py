@@ -23,8 +23,8 @@ def create_user(user_id, username, email,type=1):
     return db.users.insert_one({'_id': user_id,'username': username, 'email': email, 'type': type})
 
 
-def create_product(name, price, description):
-    return db.products.insert_one({'name': name, 'price': price, 'description': description})
+def create_product(name, price, description, image):
+    return db.products.insert_one({'name': name, 'price': price, 'description': description, 'image': image})
 
 def get_product(product_id):
     return db.products.find_one({'_id': ObjectId(product_id)})

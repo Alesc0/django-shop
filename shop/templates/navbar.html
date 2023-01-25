@@ -9,7 +9,7 @@
       <a class="nav-link" href="/">Home</span></a>
     </li>
     <li {% if request.path == '/cart' %} class="active" {% endif %}>
-      <a class="nav-link" href="/cart">cart</span></a>
+      <a class="nav-link" href="/cart">Cart</span></a>
     </li>
     {% if request.user.is_superuser %}
     <li {% if request.path == '/admin' %} class="active" {% endif %}>
