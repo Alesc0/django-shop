@@ -17,6 +17,14 @@ class customUserForm(forms.Form):
     widget=forms.Select(choices=((1, 'User'),(2, 'Admin'),(3,'Comercial 1'),(4,'Comercial 2')))
     type = forms.IntegerField(widget=widget)
 
+class comercialUserForm(forms.Form):
+    username = forms.CharField()
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput)
+    widget=forms.Select(choices=((1,'Comercial 1'),(2,'Comercial 2')))
+    type = forms.IntegerField(widget=widget)
+    company = forms.CharField()
+
 class addProductForm(forms.Form):
     name = forms.CharField()
     price = forms.IntegerField()

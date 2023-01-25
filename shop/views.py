@@ -76,6 +76,25 @@ def register(request):
     form = forms.registerForm()
     return render (request, "register.html", context={"form":form})
 
+def registerComercial(request):
+    if request.user.is_authenticated:
+        return redirect("/")
+    if request.method == "POST":
+        form = forms.comercialUserForm(request.POST)
+        if form.is_valid():
+            if(form.cleaned_data['password1'] != form.cleaned_data['password2']):
+                messages.error(request, "Unsuccessful registration. Passwords do not match.")
+                return render (request, "registerComercial.html", context={"form":form})
+            user = User.objects.create_user(username=form.cleaned_data['username'], password=form.cleaned_data['password1'],is_active=False)
+            user.save()
+            MongoHandler.create_user(user.id,user.username,form.cleaned_data['email'],form.cleaned_data['type'],form.cleaned_data['companyName'])
+            login(request, user)
+            messages.success(request, "Registration successful." )
+            return redirect ("/")
+        messages.error(request, "Unsuccessful registration. Invalid information.")
+    form = forms.comercialUserForm()
+    return render (request, "register.html", context={"form":form})
+
 def addProduct(request):
     if request.method == "POST":
         form = forms.addProductForm(request.POST,request.FILES)
@@ -140,3 +159,4 @@ def changeQuantity(request,id):
             response.delete_cookie('cart')
         response.content = "success"
     return response
+

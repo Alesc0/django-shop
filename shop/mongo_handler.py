@@ -19,9 +19,10 @@ def list_users():
     #pagination https://www.mongodb.com/docs/manual/reference/method/cursor.skip/
     return db.users.find()
 
-def create_user(user_id, username, email,type=1):
-    return db.users.insert_one({'_id': user_id,'username': username, 'email': email, 'type': type})
-
+def create_user(user_id, username, email,_type=1,company=None):
+    if company is None:
+        return db.users.insert_one({'_id': user_id,'username': username, 'email': email, 'type': _type})
+    return db.users.insert_one({'_id': user_id,'username': username, 'email': email, 'type': _type, "company": company})
 
 def create_product(name, price, description, image):
     return db.products.insert_one({'name': name, 'price': price, 'description': description, 'image': image})
