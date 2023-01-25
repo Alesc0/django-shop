@@ -46,3 +46,9 @@ html {
   margin-left: auto;
   width: fit-content;
 }
+
+.product-cart-img{
+  width: 5em;
+  height: 5em;
+  margin-left: auto;
+}
