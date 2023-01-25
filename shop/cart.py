@@ -11,7 +11,9 @@ def addItem(request,product,quantity):
     else:
         if 'cart' in request.COOKIES:
             cookie_cart = request.COOKIES['cart']
-            cookie_cart += "," + str(product) + "-" + str(quantity)
+            cart = cookie_cart.split(',')
+            cart.append(str(product) + "-" + str(quantity))
+            cookie_cart = ",".join(cart)
         else:
             cookie_cart = str(product) + "-" + str(quantity)
     return cookie_cart
@@ -29,7 +31,7 @@ def removeItem(request,product):
                 item = item.split('-')
                 if(item[0] == str(product)):
                     cart.remove(item[0] + "-" + item[1])
-            cookie_cart = ",".join(cart)
+            cookie_cart = None if len(cart) == 0 else ",".join(cart)
     return cookie_cart
 
 def editItem(request,product,quantity):
@@ -42,10 +44,11 @@ def editItem(request,product,quantity):
         if 'cart' in request.COOKIES:
             cookie_cart = request.COOKIES['cart']
             cart = cookie_cart.split(',')
-            for item in cart:
+            for index,item in enumerate(cart):
                 item = item.split('-')
                 if(item[0] == str(product)):
-                    item[1] = quantity
+                    cart.remove(item[0] + "-" + item[1])
+                    cart.insert(index,str(product) + "-" + str(quantity))
             cookie_cart = ",".join(cart)
     return cookie_cart
 

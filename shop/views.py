@@ -112,31 +112,31 @@ def addToCart(request,id):
     response = HttpResponse()
     if request.method == "GET":
         res = cartUtils.addItem(request,id,1)
-        if res == None:
-            response.content = "success"
-        elif type(res) == str:
-            response.content = "success"
+        if res != None:
             response.set_cookie('cart',res, max_age=60*60*24*365*2)
+        else:
+            response.delete_cookie('cart')
+        response.content = "success"
     return response
 
 def removeFromCart(request,id):
     response = HttpResponse()
     if request.method == "GET":
         res = cartUtils.removeItem(request,id)
-        if res == None:
-            response.content = "success"
-        elif type(res) == str:
-            response.content = "success"
+        if res != None:
             response.set_cookie('cart',res, max_age=60*60*24*365*2)
+        else:
+            response.delete_cookie('cart')
+        response.content = "success"
     return response
 
 def changeQuantity(request,id):
     response = HttpResponse()
     if request.method == "GET":
-        res = cartUtils.changeQuantity(request,id,request.GET['quantity'])
-        if res == None:
-            response.content = "success"
-        elif type(res) == str:
-            response.content = "success"
+        res = cartUtils.editItem(request,id,request.GET['quantity'])
+        if res != None:
             response.set_cookie('cart',res, max_age=60*60*24*365*2)
+        else:
+            response.delete_cookie('cart')
+        response.content = "success"
     return response

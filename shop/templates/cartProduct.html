@@ -1,9 +1,19 @@
 {% load templates %}
-<div style="display:flex;flex-direction:row;align-items:center;gap:50px;">
-    {% with product_=product|getProduct %}
-    <h5>{{product_.name}}</h5>
-    <p><strong>{{product_.price}}€</strong></p>
-    <input style="max-width:100px" type="number" value={{product_.quantity}} />
-    <button id="{{product_|private:'_id'}}" name="removeFromCart" class="warning" style="width:fit-content">X</button>
-    {% endwith %}
+{% with product_=product|getProduct %}
+<div
+  style="display: flex; flex-direction: row; align-items: center; gap: 50px"
+  id="{{product_|private:'_id'}}"
+>
+  <h5>{{product_.name}}</h5>
+  <p><strong>{{product_.price}}€</strong></p>
+  <input
+    name="quantity"
+    style="max-width: 100px"
+    type="number"
+    value="{{product_.quantity}}"
+  />
+  <button name="removeFromCart" class="warning" style="width: fit-content">
+    X
+  </button>
 </div>
+{% endwith %}
