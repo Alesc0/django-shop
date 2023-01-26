@@ -1,10 +1,12 @@
 import sys
+import shop.db_handler as DBHandler
 from shop.models import Cart_Item
 from django.shortcuts import redirect
 
 def addItem(request,product,quantity):
     if(request.user.is_authenticated):
-        cartItem = Cart_Item.objects.get_or_create(user=request.user,product=product,quantity=quantity)
+        _,product_= DBHandler.get_product(product)
+        cartItem = Cart_Item.objects.get_or_create(user=request.user,product=product_,quantity=quantity)
         if(cartItem[1]):
             cartItem[0].save()
         cookie_cart = None

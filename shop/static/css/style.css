@@ -20,7 +20,7 @@ html {
   flex-direction: column;
 }
 .product-img {
-  height: 10em;
+  height:10em;
   object-fit: fill;
 }
 

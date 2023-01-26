@@ -2,7 +2,7 @@ import sys
 from django import template
 from shop.models import Cart_Item
 
-import shop.mongo_handler as MongoHandler
+import shop.db_handler as DBHandler
 
 
 register = template.Library()
@@ -22,7 +22,7 @@ def findInCart(product, cart):
                 return True
     else:
         for item in cart:
-            if item.product == product:
+            if item.product.id == int(product):
                 return True
         return False
 
@@ -36,10 +36,13 @@ def limitChars(string, limit):
 @register.filter(name='getProduct')
 def getProduct(product):
     if isinstance(product,Cart_Item):
-        product_ = MongoHandler.get_product(product.product)
-        product_["quantity"] = product.quantity
-        return product_
-    product = product.split('-')
-    product_ = MongoHandler.get_product(product[0])
-    product_["quantity"] = product[1]
-    return product_
+        id = str(product.product.id)
+        quantity = product.quantity
+    else:
+        split = product.split('-')
+        id = split[0]
+        quantity = split[1]
+
+    final_prod,_ = DBHandler.get_product(id)
+    final_prod["quantity"] = quantity
+    return final_prod
