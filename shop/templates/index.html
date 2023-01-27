@@ -1,24 +1,25 @@
 {% extends 'base.html' %} {% load templates %} {% load static %} {% block title %}
 Home {% endblock title %} {% block content %}
-  <div class="grid-custom">
-    {% for product in products %}
-    <article class="product-card">
-      <header class="product-header">
-        <img class="product-img" src="{% get_media_prefix %}/{{product.image}}.jpg" alt="{{ product.name }}">
-      </header>
-        <p class="product-title">{{ product.name }}</p>
-        <p class="product-body">{{ product.description|limitChars:100 }}</p>
-      <div>
+<div class="grid-custom">
+  {% for product in products %}
+  <article class="product-card">
+    <header class="product-header">
+      <img class="product-img" src="{% get_media_prefix %}/{{product.image}}.jpg" alt="{{ product.name }}">
+    </header>
+    <p class="product-title">{{ product.name }}</p>
+    <p class="product-body">{{ product.description|limitChars:100 }}</p>
+    <div>
       <p class="product-price">{{ product.price }} €</p>
-      </div>
-      {% with getid=product|private:'_id'%}
-      <button class="addCart"  id="{{ product|private:'_id' }}" {%if product|private:'_id'|findInCart:cart %} disabled {%endif%}>
-        {%if product|private:'_id'|findInCart:cart %} Already in cart {% else %} Add To Cart {%endif%}
-      </button>
-      {% endwith %}
-    </article>
-    {% endfor %}
-  </div>
+    </div>
+    {% with getid=product|private:'_id'%}
+    <button class="addCart" id="{{ product|private:'_id' }}" {%if product|private:'_id'|findInCart:cart %} disabled
+      {%endif%}>
+      {%if product|private:'_id'|findInCart:cart %} Already in cart {% else %} Add To Cart {%endif%}
+    </button>
+    {% endwith %}
+  </article>
+  {% endfor %}
+</div>
 <script src="{% static 'js/cartActions.js' %}"></script>
 
 {% endblock content %}

@@ -1,19 +1,19 @@
 {% load static %}
 <html data-theme="light">
-  <head>
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-    <script src="{% static "js/jquery-3.6.3.min.js" %}"></script>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css"
-    />
-  </head>
-  <body style="width:80%;margin:0 auto">
-    {% include 'navbar.html' %}
-    <main class="container">
-      {% block content %} {% endblock %}
-    </main>
-    <script src="{% static "js/cartActions.js" %}"></script>
-  </body>
+
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <script src="{% static " js/jquery-3.6.3.min.js" %}"></script>
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" />
+</head>
+
+<body style="width:80%;margin:0 auto">
+  {% include 'navbar.html' %}
+  <main class="container">
+    {% block content %} {% endblock %}
+  </main>
+  <script src="{% static " js/cartActions.js" %}"></script>
+</body>
+
 </html>

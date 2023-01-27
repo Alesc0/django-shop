@@ -29,3 +29,20 @@ class addProductForm(forms.Form):
     stock = forms.IntegerField(min_value=0)
     price = forms.IntegerField(min_value=0)
     image = forms.ImageField()
+    
+class checkoutBillingForm(forms.Form):
+    name = forms.CharField()
+    address = forms.CharField()
+    city = forms.CharField()
+    zip = forms.CharField()
+    country = forms.CharField()
+    phone = forms.CharField()
+    same_as_billing = forms.BooleanField(required=False)
+
+class checkoutShippingForm(forms.Form):
+    name = forms.CharField()
+    address = forms.CharField()
+    city = forms.CharField()
+    zip = forms.CharField()
+    country = forms.CharField()
+    phone = forms.CharField()

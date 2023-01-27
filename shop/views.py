@@ -164,3 +164,11 @@ def changeQuantity(request,id):
         response.content = "success"
     return response
 
+def checkout(request):
+    cart = cartUtils.getCart(request)
+    if request.method == "POST":
+        form = forms.checkoutForm(request.POST)
+        if form.is_valid():
+            return redirect ("/")
+    form = forms.checkoutForm()
+    return render (request, "checkout.html", context={"form":form,"cart":cart})
