@@ -5,7 +5,9 @@ import os
 import environ
 from django.contrib.auth.models import User
 from django.db import transaction
-from shop.models import Product, Sales, Sales_Item
+from shop.models import Product, Sales, Sales_Item,Billing,Shipping
+from django.utils import timezone
+import shop.cart as cartUtils
 
 env = environ.Env()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -14,10 +16,6 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 client = MongoClient(env('MONGO_STRING'))
 db = client.dbproj
-
-
-def get_user(user_id):
-    return db.users.find_one({'_id': user_id})
 
 
 def list_users():
@@ -76,15 +74,43 @@ def list_products():
         products.append(product)
     return products
 
-
-@transaction.atomic
-def create_order(user, cart):
-    usr = User.objects.get(id=user)
-    sale = Sales(user=usr, state='pending', date=datetime.datetime.now())
+def create_order(user_id, cart):
+    user = User.objects.get(id=user_id)
+    sale = Sales(user=user, state='billing info necessary', date=timezone.now())
     sale.save()
     for item in cart:
-        product = Product.objects.get(id=item['product_id'])
         sales_item = Sales_Item.objects.create(
-            sale=sale, product=product, price=item['price'], promo=item['promo'], quantity=item['quantity'])
+            sale=sale, product=item.product, price=item.product.price, promo=item.product.promo, quantity=item.quantity)
         sales_item.save()
-    return 0
+    return sale
+
+
+def link_billing(sale_id, nif, address, city, zip, country):
+    sale = Sales.objects.get(id=sale_id)
+    billing = Billing(sale=sale, nif=nif, address=address,
+                      city=city, zip=zip, country=country)
+    billing.save()
+    sale.state = 'shipping info necessary'
+    sale.save()
+    return billing
+
+def link_shipping(sale_id, address, city, zip, country):
+    sale = Sales.objects.get(id=sale_id)
+    shipping = Shipping(sale=sale, address=address,
+                      city=city, zip=zip, country=country)
+    shipping.save()
+    sale.state = 'awaiting approval'
+    sale.save()
+    return shipping
+
+def get_orders(user_id):
+    user = User.objects.get(id=user_id)
+    sales = Sales.objects.filter(user=user).order_by('-date')
+    
+    for sale in sales:
+        sale.products = []
+        for item in Sales_Item.objects.filter(sale=sale):
+            product = db.products.find_one({'_id': item.product.id})
+            product.update(item.product.__dict__)
+            sale.products.append(product)
+    return sales

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% load templates %}  {% load static %}  {% block title %} Orders {% endblock title %}
+{% block content %}
+{% for order in orders %}
+<details>
+    <summary role="button">
+        Order #{{ order.id }} - {{ order.date|date:"d/m/Y" }} - {{ order.state }}
+    </summary>
+    <div>
+        {% for product in order.products %}
+        {% include 'custom/inline_product.html' with product=product%}
+        {% endfor %}
+    </div>
+</details>
+{% endfor %}
+{% endblock content %}

@@ -1,0 +1,9 @@
+{% extends 'base.html' %} {% load templates %} {% load static %}
+{% block title %} Shipping {% endblock title %} {% block content %}
+<form>
+{{form.as_p}}
+</form> 
+<div style="display:flex;justify-content:center">
+    <a href="" role="button" style="width: fit-content">Finish</a>
+</div>
+{% endblock content %}

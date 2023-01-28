@@ -1,0 +1,10 @@
+{% load templates %}
+{% load static %}
+
+<div style="display:flex;flex-direction:row;gap:1em;padding-inline:0.5em;margin-bottom:1em">
+    <img class="product-cart-img" src="{% get_media_prefix %}/{{product.image}}.jpg"
+        alt="{{ product.name }}" />
+    <p style="font-weight:bold;font-weight:20px">{{ product.name }}</p>
+    <p>{{ product.description|limitChars:100 }}</p>
+    <p style="font-weight:bold;font-size:22px">{{ product.price }}&nbsp€</p>
+</div>

@@ -31,13 +31,13 @@ class addProductForm(forms.Form):
     image = forms.ImageField()
     
 class checkoutBillingForm(forms.Form):
-    name = forms.CharField()
-    address = forms.CharField()
-    city = forms.CharField()
-    zip = forms.CharField()
-    country = forms.CharField()
-    phone = forms.CharField()
-    same_as_billing = forms.BooleanField(required=False)
+    nif = forms.CharField()
+    address = forms.CharField(max_length=100)
+    city = forms.CharField(max_length=100)
+    zip = forms.CharField(max_length=100)
+    country = forms.CharField(max_length=100)
+    same_for_shipping = forms.BooleanField(required=False)
+    
 
 class checkoutShippingForm(forms.Form):
     name = forms.CharField()

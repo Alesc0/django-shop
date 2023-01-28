@@ -1,0 +1,22 @@
+{% extends 'base.html' %} {% load templates %} {% load static %}
+{% block title %} Checkout {% endblock title %} {% block content %}
+<div id="cart" style="
+    display: flex;
+    flex-direction: column;
+    padding: 2em;
+    width: fit-content;
+    margin: 0 auto;
+  ">
+  {% for product in cart %}
+  {% include 'cartProduct.html' with product=product%}
+  {% endfor %}
+  {% if cart|length == 0 %} Your cart is empty {% endif %}
+</div>
+<form method="POST">
+  {% csrf_token %}
+  {{form.as_p}}
+  <button type="submit" style="width: fit-content">Continue</button>
+</form>
+
+</div>
+{% endblock content %}

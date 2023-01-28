@@ -1,6 +1,6 @@
 import sys
 from django.shortcuts import redirect, render
-from django.contrib.auth import login,authenticate
+from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.contrib.auth.models import User
 import shop.cart as cartUtils
@@ -11,25 +11,29 @@ from django.http import HttpResponse
 import shop.forms as forms
 from django.core.files.storage import FileSystemStorage
 import uuid
+from django.db import transaction
+
 
 def index(request):
     context = {}
     products = DBHandler.list_products()
     context['products'] = products
-    if(request.user.is_authenticated):
-        if(request.COOKIES.get('cart') is not None):
+    if (request.user.is_authenticated):
+        if (request.COOKIES.get('cart') is not None):
             cartUtils.convertCart(request)
-            context['cart'] = cartUtils.getCart(request) 
-            response = render(request,"index.html",context=context)
+            context['cart'] = cartUtils.getCart(request)
+            response = render(request, "index.html", context=context)
             response.delete_cookie('cart')
             return response
     context['cart'] = cartUtils.getCart(request)
 
-    return render(request,"index.html",context=context)
+    return render(request, "index.html", context=context)
+
 
 def logout(request):
     auth_logout(request)
     return redirect("/")
+
 
 def admin(request):
     if not request.user.is_authenticated:
@@ -38,23 +42,24 @@ def admin(request):
         return redirect("/")
     users = DBHandler.list_users()
     products = DBHandler.list_products()
-    return render(request, 'admin.html',context={'users':users, 'products':products})
+    return render(request, 'admin.html', context={'users': users, 'products': products})
 
 
 def logIn(request):
     if request.method == "POST":
         form = forms.loginForm(request.POST)
         if form.is_valid():
-            user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
-            if(user is None):
+            user = authenticate(
+                username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+            if (user is None):
                 form.add_error('password', 'Invalid username or password.')
-                return render(request, 'login.html',context={'form':form})
+                return render(request, 'login.html', context={'form': form})
             login(request, user)
-            messages.success(request, "Login successful." )
-            return redirect ("/")
+            messages.success(request, "Login successful.")
+            return redirect("/")
         messages.error(request, "Unsuccessful login. Invalid information.")
     form = forms.loginForm()
-    return render(request, 'login.html',context={'form':form})
+    return render(request, 'login.html', context={'form': form})
 
 
 def register(request):
@@ -63,21 +68,24 @@ def register(request):
     if request.method == "POST":
         form = forms.registerForm(request.POST)
         if form.is_valid():
-            if(form.cleaned_data['password1'] != form.cleaned_data['password2']):
+            if (form.cleaned_data['password1'] != form.cleaned_data['password2']):
                 form.add_error('password1', 'Passwords do not match.')
                 form.add_error('password2', 'Passwords do not match.')
-                return render (request, "register.html", context={"form":form})
+                return render(request, "register.html", context={"form": form})
             cleanedForm = form.cleaned_data
             try:
-                user = DBHandler.create_user(cleanedForm['username'],cleanedForm['password1'],cleanedForm['first_name'],cleanedForm['last_name'], cleanedForm['email'])
+                user = DBHandler.create_user(cleanedForm['username'], cleanedForm['password1'],
+                                             cleanedForm['first_name'], cleanedForm['last_name'], cleanedForm['email'])
             except:
                 form.add_error('username', 'Username already exists.')
-                return render (request, "register.html", context={"form":form})
+                return render(request, "register.html", context={"form": form})
             login(request, user)
-            return redirect ("/")
-        messages.error(request, "Unsuccessful registration. Invalid information.")
+            return redirect("/")
+        messages.error(
+            request, "Unsuccessful registration. Invalid information.")
     form = forms.registerForm()
-    return render (request, "register.html", context={"form":form})
+    return render(request, "register.html", context={"form": form})
+
 
 def registerComercial(request):
     if request.user.is_authenticated and not request.user.is_superuser:
@@ -85,90 +93,138 @@ def registerComercial(request):
     if request.method == "POST":
         form = forms.comercialUserForm(request.POST)
         if form.is_valid():
-            if(form.cleaned_data['password1'] != form.cleaned_data['password2']):
-                messages.error(request, "Unsuccessful registration. Passwords do not match.")
-                return render (request, "registerComercial.html", context={"form":form})
+            if (form.cleaned_data['password1'] != form.cleaned_data['password2']):
+                messages.error(
+                    request, "Unsuccessful registration. Passwords do not match.")
+                return render(request, "registerComercial.html", context={"form": form})
             cleanedForm = form.cleaned_data
             try:
-                user = DBHandler.create_comercial(cleanedForm['username'],cleanedForm['password1'],cleanedForm['first_name'],cleanedForm['last_name'], cleanedForm['email'],cleanedForm['type'],cleanedForm['company'])
+                user = DBHandler.create_comercial(cleanedForm['username'], cleanedForm['password1'], cleanedForm['first_name'],
+                                                  cleanedForm['last_name'], cleanedForm['email'], cleanedForm['type'], cleanedForm['company'])
             except:
                 form.add_error('username', 'Username already exists.')
-                return render (request, "registerComercial.html", context={"form":form})
+                return render(request, "registerComercial.html", context={"form": form})
             login(request, user)
-            messages.success(request, "Registration successful." )
-            return redirect ("/")
-        messages.error(request, "Unsuccessful registration. Invalid information.")
+            messages.success(request, "Registration successful.")
+            return redirect("/")
+        messages.error(
+            request, "Unsuccessful registration. Invalid information.")
     form = forms.comercialUserForm()
-    return render (request, "register.html", context={"form":form})
+    return render(request, "register.html", context={"form": form})
+
 
 def addProduct(request):
     if request.method == "POST":
-        form = forms.addProductForm(request.POST,request.FILES)
+        form = forms.addProductForm(request.POST, request.FILES)
         img = request.FILES['image']
         if form.is_valid():
             fss = FileSystemStorage()
             upload_name = str(uuid.uuid4())
             fss.save(upload_name + ".jpg", img)
-            #name, description,price,stock,  image
-            DBHandler.create_product(form.cleaned_data['name'],form.cleaned_data['description'],form.cleaned_data['price'],form.cleaned_data['stock'],upload_name)
-            return redirect ("/")
-        messages.error(request, "Unsuccessful product addition. Invalid information.")
+            # name, description,price,stock,  image
+            DBHandler.create_product(form.cleaned_data['name'], form.cleaned_data['description'],
+                                     form.cleaned_data['price'], form.cleaned_data['stock'], upload_name)
+            return redirect("/")
+        messages.error(
+            request, "Unsuccessful product addition. Invalid information.")
     form = forms.addProductForm()
-    return render (request, "product.html", context={"form":form})
+    return render(request, "product.html", context={"form": form})
+
 
 def addUser(request):
     if request.method == "POST":
         form = forms.registerForm(request.POST)
         if form.is_valid():
-            DBHandler.create_user(form.cleaned_data['username'],form.cleaned_data['password'],form.cleaned_data['first_name'],form.cleaned_data['last_name'], form.cleaned_data['email'],request.user.is_superuser)
-            messages.success(request, "Admin added successfully." )
-            return redirect ("/admin")
-        messages.error(request, "Unsuccessful user addition. Invalid information.")
+            DBHandler.create_user(form.cleaned_data['username'], form.cleaned_data['password'], form.cleaned_data['first_name'],
+                                  form.cleaned_data['last_name'], form.cleaned_data['email'], request.user.is_superuser)
+            messages.success(request, "Admin added successfully.")
+            return redirect("/admin")
+        messages.error(
+            request, "Unsuccessful user addition. Invalid information.")
     form = forms.registerForm()
-    return render (request, "addUser.html", context={"form":form})
+    return render(request, "addUser.html", context={"form": form})
+
 
 def cart(request):
     cart = cartUtils.getCart(request)
-    return render(request, 'cart.html',context={'cart': cart})
+    return render(request, 'cart.html', context={'cart': cart})
 
-def addToCart(request,id):
+
+def addToCart(request, id):
     response = HttpResponse()
     if request.method == "GET":
-        res = cartUtils.addItem(request,id,1)
+        res = cartUtils.addItem(request, id, 1)
         if res != None:
-            response.set_cookie('cart',res, max_age=60*60*24*365*2)
+            response.set_cookie('cart', res, max_age=60*60*24*365*2)
         else:
             response.delete_cookie('cart')
         response.content = "success"
     return response
 
-def removeFromCart(request,id):
+
+def removeFromCart(request, id):
     response = HttpResponse()
     if request.method == "GET":
-        res = cartUtils.removeItem(request,id)
+        res = cartUtils.removeItem(request, id)
         if res != None:
-            response.set_cookie('cart',res, max_age=60*60*24*365*2)
+            response.set_cookie('cart', res, max_age=60*60*24*365*2)
         else:
             response.delete_cookie('cart')
         response.content = "success"
     return response
 
-def changeQuantity(request,id):
+
+def changeQuantity(request, id):
     response = HttpResponse()
     if request.method == "GET":
-        res = cartUtils.editItem(request,id,request.GET['quantity'])
+        res = cartUtils.editItem(request, id, request.GET['quantity'])
         if res != None:
-            response.set_cookie('cart',res, max_age=60*60*24*365*2)
+            response.set_cookie('cart', res, max_age=60*60*24*365*2)
         else:
             response.delete_cookie('cart')
         response.content = "success"
     return response
 
-def checkout(request):
+
+@transaction.atomic
+def checkoutBilling(request):
     cart = cartUtils.getCart(request)
     if request.method == "POST":
-        form = forms.checkoutForm(request.POST)
+        form = forms.checkoutBillingForm(request.POST)
         if form.is_valid():
-            return redirect ("/")
-    form = forms.checkoutForm()
-    return render (request, "checkout.html", context={"form":form,"cart":cart})
+            cleaned_data = form.cleaned_data
+            try:
+                with transaction.atomic():
+                    sale = DBHandler.create_order(
+                        request.user.id, cartUtils.getCart(request))
+                    DBHandler.link_billing(
+                        sale.id, cleaned_data['nif'], cleaned_data['address'],
+                        cleaned_data['city'], cleaned_data['zip'], cleaned_data['country'])
+            except Exception as e:
+                print(e, file=sys.stderr)
+                form.add_error(
+                    'nif', 'Error processing order. Please try again.')
+                return render(request, "checkoutBilling.html", context={"form": form, "cart": cart})
+            if cleaned_data['same_for_shipping'] == False:
+                return redirect("/checkout/shipping")
+            DBHandler.link_shipping(
+                sale.id, cleaned_data['address'],
+                cleaned_data['city'], cleaned_data['zip'], cleaned_data['country'])
+            return redirect("/")
+    form = forms.checkoutBillingForm()
+    return render(request, "checkoutBilling.html", context={"form": form, "cart": cart})
+
+
+def checkoutShipping(request):
+    cart = cartUtils.getCart(request)
+    if request.method == "POST":
+        form = forms.checkoutShippingForm(request.POST)
+        if form.is_valid():
+            return redirect("/")
+    form = forms.checkoutShippingForm()
+    return render(request, "checkoutShipping.html", context={"form": form, "cart": cart})
+
+
+def orders(request):
+    orders = DBHandler.get_orders(request.user.id)
+    return render(request, 'orders.html', context={'orders': orders})

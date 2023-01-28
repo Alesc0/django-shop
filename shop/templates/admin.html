@@ -3,6 +3,7 @@
 {% block title %}
 Admin
 {% endblock title %}
+{% load static %}
 
 {% block content %}
 <main class="container">
@@ -11,8 +12,8 @@ Admin
             Users
         </summary>
         <div>
-            <a href="/addUser">Add Admin</a>
-            <a href="/comercialUser">Add Comercial</a>
+            <a role="button" href="/addUser">Add Admin</a>
+            <a role="button" href="/comercialUser">Add Comercial</a>
         </div>
         {% for user in users %}
         <div>
@@ -27,14 +28,10 @@ Admin
             Produtos
         </summary>
         <div>
-            <a href="/addProduct">Add Product</a>
+            <a role="button" href="/addProduct">Add Product</a>
         </div>
         {% for product in products %}
-        <div>
-            <h2>{{ product.name }}</h2>
-            <p>{{ product.description|limitChars:255 }}</p>
-            <p>{{ product.price }}</p>
-        </div>
+        {% include 'custom/inline_product.html' with product=product%}
         {% endfor %}
         </div>
     </details>

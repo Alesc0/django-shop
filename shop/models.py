@@ -13,8 +13,22 @@ class Cart_Item (models.Model):
 class Sales (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateTimeField()
-    state = models.CharField(max_length=20)
+    state = models.CharField(max_length=50)
 
+class Billing(models.Model):
+    sale = models.ForeignKey(Sales, on_delete=models.CASCADE)
+    nif = models.CharField(max_length=100)
+    address = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    zip = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+
+class Shipping(models.Model):
+    sale = models.ForeignKey(Sales, on_delete=models.CASCADE)
+    address = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    zip = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
 
 class Sales_Item (models.Model):
     sale = models.ForeignKey(Sales, on_delete=models.CASCADE)
