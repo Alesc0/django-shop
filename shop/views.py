@@ -199,17 +199,21 @@ def checkoutBilling(request):
                     DBHandler.link_billing(
                         sale.id, cleaned_data['nif'], cleaned_data['address'],
                         cleaned_data['city'], cleaned_data['zip'], cleaned_data['country'])
-            except Exception as e:
-                print(e, file=sys.stderr)
+            except:
                 form.add_error(
                     'nif', 'Error processing order. Please try again.')
                 return render(request, "checkoutBilling.html", context={"form": form, "cart": cart})
+            
             if cleaned_data['same_for_shipping'] == False:
                 return redirect("/checkout/shipping/" + str(sale.id))
             DBHandler.link_shipping(
                 sale.id, cleaned_data['address'],
                 cleaned_data['city'], cleaned_data['zip'], cleaned_data['country'])
-            return redirect("/")
+            
+            cartUtils.clearCart(request)
+            response = redirect("orders")
+            response.delete_cookie('cart')
+            return response
     form = forms.checkoutBillingForm()
     return render(request, "checkoutBilling.html", context={"form": form, "cart": cart})
 

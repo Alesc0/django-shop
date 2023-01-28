@@ -73,3 +73,12 @@ def convertCart(request):
         item = item.split('-')
         addItem(request,item[0],item[1])
     return True
+
+def clearCart(request):
+    if(request.user.is_authenticated):
+        cartItems = Cart_Item.objects.filter(user=request.user)
+        cartItems.delete()
+        cookie_cart = None
+    else:
+        cookie_cart = None
+    return cookie_cart
