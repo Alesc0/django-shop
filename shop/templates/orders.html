@@ -1,11 +1,18 @@
-{% extends 'base.html' %}{% load templates %}  {% load static %}  {% block title %} Orders {% endblock title %}
+{% extends 'base.html' %}{% load templates %} {% load static %} {% block title %} Orders {% endblock title %}
 {% block content %}
 {% for order in orders %}
 <details>
     <summary role="button">
         Order #{{ order.id }} - {{ order.date|date:"d/m/Y" }} - {{ order.state }}
     </summary>
-    <div>
+    <div style="text-align:center">
+        {% if order.state == 'shipping info necessary' %}
+        <a style="display: block;margin-bottom:1em" href="{% url 'checkout_shipping' order.id %}">
+            <mark>This order is not complete as its missing the shipping information. Click here to finish setting
+                up
+                the order.</mark>
+        </a>
+        {% endif %}
         {% for product in order.products %}
         {% include 'custom/inline_product.html' with product=product%}
         {% endfor %}

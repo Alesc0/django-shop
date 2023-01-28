@@ -46,3 +46,7 @@ def getProduct(product):
     final_prod,_ = DBHandler.get_product(id)
     final_prod["quantity"] = quantity
     return final_prod
+
+@register.filter(name='getUser')
+def getUser(user_id):
+    return DBHandler.get_user(user_id)

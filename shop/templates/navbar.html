@@ -1,4 +1,5 @@
 {% load static %}
+{% load templates %}
 
 <nav>
   <ul style="flex:1">
@@ -22,10 +23,26 @@
     </li>
     {% endif %}
   </ul>
+
   {% if request.user.is_authenticated %}
-  <li style="margin-left:auto">
-    <a href="logout">Logout</a>
-  </li>
+  <details role="list">
+    <summary>
+      {% with user=user.id|getUser %}
+        {{user.username}}
+      {% endwith %}
+    </summary>
+    <ul role="listbox">
+      <li>
+        <a href="">Profile</a>
+      </li>
+      <li>
+        <a href="logout">Logout</a>
+      </li>
+    </ul>
+  </details>
+
+
+  
   {% else %}
   <li>
     <a href="login">Login</a>

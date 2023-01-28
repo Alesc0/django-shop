@@ -18,6 +18,12 @@ client = MongoClient(env('MONGO_STRING'))
 db = client.dbproj
 
 
+def get_user(user_id):
+    user = User.objects.get(id=user_id)
+    mg = db.users.find_one({'_id': user_id})
+    mg.update(user.__dict__)
+    return user
+
 def list_users():
     # pagination https://www.mongodb.com/docs/manual/reference/method/cursor.skip/
     users = []
