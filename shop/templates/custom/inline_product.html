@@ -6,5 +6,9 @@
         alt="{{ product.name }}" />
     <p style="font-weight:bold;font-weight:20px">{{ product.name }}</p>
     <p>{{ product.description|limitChars:100 }}</p>
+    {% if product.quantity %}
+    <p>{{product.quantity}}</p>
+    <p> x </p>
+    {% endif %}
     <p style="font-weight:bold;font-size:22px">{{ product.price }}&nbsp€</p>
 </div>

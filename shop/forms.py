@@ -40,9 +40,7 @@ class checkoutBillingForm(forms.Form):
     
 
 class checkoutShippingForm(forms.Form):
-    name = forms.CharField()
     address = forms.CharField()
     city = forms.CharField()
     zip = forms.CharField()
     country = forms.CharField()
-    phone = forms.CharField()

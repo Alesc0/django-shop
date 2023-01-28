@@ -1,9 +1,8 @@
 {% extends 'base.html' %} {% load templates %} {% load static %}
 {% block title %} Shipping {% endblock title %} {% block content %}
-<form>
-{{form.as_p}}
-</form> 
-<div style="display:flex;justify-content:center">
-    <a href="" role="button" style="width: fit-content">Finish</a>
-</div>
+<form method="POST">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button style="width: fit-content">Finish</button>
+</form>
 {% endblock content %}

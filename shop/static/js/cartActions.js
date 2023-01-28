@@ -1,7 +1,7 @@
 $('button[class^="addCart"]').click(function (e) {
   e.preventDefault();
   $.ajax({
-    url: "addToCart/" + this.id,
+    url: "/addToCart/" + this.id,
     type: "GET",
   }).done((response) => {
     if (response == "success") {
@@ -14,7 +14,7 @@ $('button[class^="addCart"]').click(function (e) {
 $('button[name^="removeFromCart"]').click(function (e) {
   e.preventDefault();
   $.ajax({
-    url: "removeFromCart/" + $(this).parent().attr("id"),
+    url: "/removeFromCart/" + $(this).parent().attr("id"),
     type: "GET",
   }).done((response) => {
     if (response == "success") {
@@ -30,7 +30,7 @@ $('button[name^="removeFromCart"]').click(function (e) {
 $('input[name^="quantity"]').change(function (e) {
   e.preventDefault();
   $.ajax({
-    url: "changeQuantity/" + $(this).parent().attr("id"),
+    url: "/changeQuantity/" + $(this).parent().attr("id"),
     type: "GET",
     data: { quantity: this.value },
   }).done((response) => {

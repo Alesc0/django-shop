@@ -10,7 +10,7 @@
   <img class="product-cart-img" src="{% get_media_prefix %}/{{product_.image}}.jpg" alt="{{ product_.name }}" />
   <p style="font-size: 23px; flex: 1">{{product_.name}}</p>
   <p><strong>{{product_.price}}€</strong></p>
-  <input name="quantity" style="max-width: 100px" type="number" value="{{product_.quantity}}" />
+  <input name="quantity" style="max-width: 100px" type="number" value="{{product_.quantity}}" min="1" />
   <button name="removeFromCart" class="warning" style="width: fit-content;font-weight:bold;font-size:25px;padding:0.3em 0.5em 0.3em 0.5em">
     X
   </button>

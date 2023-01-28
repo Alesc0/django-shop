@@ -121,7 +121,6 @@ def addProduct(request):
             fss = FileSystemStorage()
             upload_name = str(uuid.uuid4())
             fss.save(upload_name + ".jpg", img)
-            # name, description,price,stock,  image
             DBHandler.create_product(form.cleaned_data['name'], form.cleaned_data['description'],
                                      form.cleaned_data['price'], form.cleaned_data['stock'], upload_name)
             return redirect("/")
@@ -206,7 +205,7 @@ def checkoutBilling(request):
                     'nif', 'Error processing order. Please try again.')
                 return render(request, "checkoutBilling.html", context={"form": form, "cart": cart})
             if cleaned_data['same_for_shipping'] == False:
-                return redirect("/checkout/shipping")
+                return redirect("/checkout/shipping/" + str(sale.id))
             DBHandler.link_shipping(
                 sale.id, cleaned_data['address'],
                 cleaned_data['city'], cleaned_data['zip'], cleaned_data['country'])
@@ -215,12 +214,20 @@ def checkoutBilling(request):
     return render(request, "checkoutBilling.html", context={"form": form, "cart": cart})
 
 
-def checkoutShipping(request):
+def checkoutShipping(request, sale_id):
+    if not DBHandler.validate_sale_id(request.user.id, sale_id):
+        return redirect("index")
     cart = cartUtils.getCart(request)
     if request.method == "POST":
         form = forms.checkoutShippingForm(request.POST)
         if form.is_valid():
-            return redirect("/")
+            cleaned_data = form.cleaned_data
+            DBHandler.link_shipping(sale_id,
+                                    cleaned_data['address'],
+                                    cleaned_data['city'],
+                                    cleaned_data['zip'],
+                                    cleaned_data['country'])
+            return redirect("orders")
     form = forms.checkoutShippingForm()
     return render(request, "checkoutShipping.html", context={"form": form, "cart": cart})
 

@@ -5,7 +5,7 @@ import os
 import environ
 from django.contrib.auth.models import User
 from django.db import transaction
-from shop.models import Product, Sales, Sales_Item,Billing,Shipping
+from shop.models import Product, Sales, Sales_Item, Billing, Shipping
 from django.utils import timezone
 import shop.cart as cartUtils
 
@@ -74,43 +74,69 @@ def list_products():
         products.append(product)
     return products
 
+
 def create_order(user_id, cart):
     user = User.objects.get(id=user_id)
-    sale = Sales(user=user, state='billing info necessary', date=timezone.now())
+    sale = Sales(user=user,
+                 state='billing info necessary',
+                 date=timezone.now())
     sale.save()
     for item in cart:
         sales_item = Sales_Item.objects.create(
-            sale=sale, product=item.product, price=item.product.price, promo=item.product.promo, quantity=item.quantity)
+            sale=sale,
+            product=item.product,
+            price=item.product.price,
+            promo=item.product.promo,
+            quantity=item.quantity)
         sales_item.save()
     return sale
 
 
 def link_billing(sale_id, nif, address, city, zip, country):
     sale = Sales.objects.get(id=sale_id)
-    billing = Billing(sale=sale, nif=nif, address=address,
-                      city=city, zip=zip, country=country)
+    billing = Billing(sale=sale,
+                      nif=nif,
+                      address=address,
+                      city=city,
+                      zip=zip,
+                      country=country)
     billing.save()
     sale.state = 'shipping info necessary'
     sale.save()
     return billing
 
+
 def link_shipping(sale_id, address, city, zip, country):
     sale = Sales.objects.get(id=sale_id)
-    shipping = Shipping(sale=sale, address=address,
-                      city=city, zip=zip, country=country)
+    shipping = Shipping(sale=sale,
+                        address=address,
+                        city=city,
+                        zip=zip,
+                        country=country)
     shipping.save()
     sale.state = 'awaiting approval'
     sale.save()
     return shipping
 
+
 def get_orders(user_id):
     user = User.objects.get(id=user_id)
     sales = Sales.objects.filter(user=user).order_by('-date')
-    
+
     for sale in sales:
         sale.products = []
         for item in Sales_Item.objects.filter(sale=sale):
             product = db.products.find_one({'_id': item.product.id})
             product.update(item.product.__dict__)
+            product.update(item.__dict__)
             sale.products.append(product)
     return sales
+
+
+def validate_sale_id(user_id, sale_id):
+    user = User.objects.get(id=user_id)
+    try:
+        sale = Sales.objects.get(id=sale_id, user=user)
+        return True
+    except:
+        return False
