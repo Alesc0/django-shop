@@ -19,9 +19,9 @@ class comercialUserForm(forms.Form):
     email = forms.EmailField()
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
-    widget=forms.Select(choices=((1,'Comercial 1'),(2,'Comercial 2')))
+    widget=forms.Select(choices=((1,'Comercial 1'),(2,'Comercial 2'),(3,'Partner')))
     type = forms.IntegerField(widget=widget)
-    company = forms.CharField()
+    company = forms.CharField(required=False)
 
 class addProductForm(forms.Form):
     name = forms.CharField()

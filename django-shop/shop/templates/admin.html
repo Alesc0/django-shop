@@ -12,8 +12,8 @@ Admin
             Users
         </summary>
         <div>
-            <a role="button" href="/addUser">Add Admin</a>
-            <a role="button" href="/comercialUser">Add Comercial</a>
+            <a role="button" href="{% url 'add_user' %}">Add Admin</a>
+            <a role="button" href="{% url 'other_user' %}">Add Other</a>
         </div>
         {% for user in users %}
         <div>

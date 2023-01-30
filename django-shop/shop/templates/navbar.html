@@ -6,29 +6,29 @@
     <li><strong>Lojinha</strong></li>
   </ul>
   <ul style="margin-right:5em">
-    <li {% if request.path == '/' %} class="active" {% endif %}>
+    <li>
       <a class="nav-link" href="/">Home</span></a>
     </li>
-    <li {% if request.path == '/cart' %} class="active" {% endif %}>
+    <li>
       <a class="nav-link" href="{% url 'cart' %}">Cart</span></a>
     </li>
     {% if request.user.is_authenticated %}
-    <li {% if request.path == '/cart' %} class="active" {% endif %}>
+    <li>
       <a class="nav-link" href="{% url 'orders' %}">Orders</span></a>
     </li>
     {% endif %}
     {% if request.user.is_superuser %}
-    <li {% if request.path == '/admin' %} class="active" {% endif %}>
+    <li>
       <a class="nav-link" href="{% url 'admin' %}">Admin</a>
     </li>
     {% endif %}
   </ul>
 
   {% if request.user.is_authenticated %}
-  <details role="list">
+  <li  role="list">
     <summary>
       {% with user=user.id|getUser %}
-        {{user.username}}
+      {{user.username}}
       {% endwith %}
     </summary>
     <ul role="listbox">
@@ -39,13 +39,13 @@
         <a href="logout">Logout</a>
       </li>
     </ul>
-  </details>
+  </li>
 
 
-  
+
   {% else %}
   <li>
-    <a href="login">Login</a>
+    <a href="{% url 'login' %}">Login</a>
   </li>
   {% endif %}
 </nav>

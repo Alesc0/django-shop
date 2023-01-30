@@ -20,7 +20,7 @@ html {
   flex-direction: column;
 }
 .product-img {
-  height:10em;
+  height: 10em;
   object-fit: fill;
 }
 
@@ -46,7 +46,7 @@ html {
   width: fit-content;
 }
 
-.product-cart-img{
+.product-cart-img {
   width: 5em;
   height: 5em;
 }

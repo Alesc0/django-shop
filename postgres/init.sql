@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 13.9 (Ubuntu 13.9-1.pgdg20.04+1)
--- Dumped by pg_dump version 13.9 (Ubuntu 13.9-1.pgdg20.04+1)
+-- Dumped from database version 15.1 (Debian 15.1-1.pgdg110+1)
+-- Dumped by pg_dump version 15.1 (Debian 15.1-1.pgdg110+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -15,323 +15,6 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
-
---
--- Name: btree_gin; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS btree_gin WITH SCHEMA public;
-
-
---
--- Name: EXTENSION btree_gin; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION btree_gin IS 'support for indexing common datatypes in GIN';
-
-
---
--- Name: btree_gist; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS btree_gist WITH SCHEMA public;
-
-
---
--- Name: EXTENSION btree_gist; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION btree_gist IS 'support for indexing common datatypes in GiST';
-
-
---
--- Name: citext; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS citext WITH SCHEMA public;
-
-
---
--- Name: EXTENSION citext; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION citext IS 'data type for case-insensitive character strings';
-
-
---
--- Name: cube; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS cube WITH SCHEMA public;
-
-
---
--- Name: EXTENSION cube; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION cube IS 'data type for multidimensional cubes';
-
-
---
--- Name: dblink; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS dblink WITH SCHEMA public;
-
-
---
--- Name: EXTENSION dblink; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION dblink IS 'connect to other PostgreSQL databases from within a database';
-
-
---
--- Name: dict_int; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS dict_int WITH SCHEMA public;
-
-
---
--- Name: EXTENSION dict_int; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION dict_int IS 'text search dictionary template for integers';
-
-
---
--- Name: dict_xsyn; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS dict_xsyn WITH SCHEMA public;
-
-
---
--- Name: EXTENSION dict_xsyn; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION dict_xsyn IS 'text search dictionary template for extended synonym processing';
-
-
---
--- Name: earthdistance; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS earthdistance WITH SCHEMA public;
-
-
---
--- Name: EXTENSION earthdistance; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION earthdistance IS 'calculate great-circle distances on the surface of the Earth';
-
-
---
--- Name: fuzzystrmatch; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS fuzzystrmatch WITH SCHEMA public;
-
-
---
--- Name: EXTENSION fuzzystrmatch; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION fuzzystrmatch IS 'determine similarities and distance between strings';
-
-
---
--- Name: hstore; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS hstore WITH SCHEMA public;
-
-
---
--- Name: EXTENSION hstore; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION hstore IS 'data type for storing sets of (key, value) pairs';
-
-
---
--- Name: intarray; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS intarray WITH SCHEMA public;
-
-
---
--- Name: EXTENSION intarray; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION intarray IS 'functions, operators, and index support for 1-D arrays of integers';
-
-
---
--- Name: ltree; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS ltree WITH SCHEMA public;
-
-
---
--- Name: EXTENSION ltree; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION ltree IS 'data type for hierarchical tree-like structures';
-
-
---
--- Name: pg_stat_statements; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS pg_stat_statements WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pg_stat_statements; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION pg_stat_statements IS 'track planning and execution statistics of all SQL statements executed';
-
-
---
--- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
-
-
---
--- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
-
-
---
--- Name: pgrowlocks; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS pgrowlocks WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pgrowlocks; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION pgrowlocks IS 'show row-level locking information';
-
-
---
--- Name: pgstattuple; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS pgstattuple WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pgstattuple; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION pgstattuple IS 'show tuple-level statistics';
-
-
---
--- Name: tablefunc; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS tablefunc WITH SCHEMA public;
-
-
---
--- Name: EXTENSION tablefunc; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION tablefunc IS 'functions that manipulate whole tables, including crosstab';
-
-
---
--- Name: unaccent; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
-
-
---
--- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
-
-
---
--- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
-
-
---
--- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
-
-
---
--- Name: xml2; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS xml2 WITH SCHEMA public;
-
-
---
--- Name: EXTENSION xml2; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION xml2 IS 'XPath querying and XSLT';
-
-
---
--- Name: updatestocktgr(); Type: FUNCTION; Schema: public; Owner: postgres
---
-
-CREATE FUNCTION public.updatestocktgr() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-DECLARE _stock numeric;
-BEGIN
-	select stock into _stock from shop_product where id = new.product_id;
-	if (_stock - new.quantity) >= 0 then
-		update shop_product set stock = stock - new.quantity where id = new.product_id;
-	else
-		Raise exception 'Quantity ammount higher than stock available';
-	END if;
-		
-    return new;
-END;
-$$;
-
-
-ALTER FUNCTION public.updatestocktgr() OWNER TO postgres;
 
 SET default_tablespace = '';
 
@@ -820,38 +503,38 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 14	Can change cart_ item	4	change_cart_item
 15	Can delete cart_ item	4	delete_cart_item
 16	Can view cart_ item	4	view_cart_item
-17	Can add log entry	5	add_logentry
-18	Can change log entry	5	change_logentry
-19	Can delete log entry	5	delete_logentry
-20	Can view log entry	5	view_logentry
-21	Can add permission	6	add_permission
-22	Can change permission	6	change_permission
-23	Can delete permission	6	delete_permission
-24	Can view permission	6	view_permission
-25	Can add group	7	add_group
-26	Can change group	7	change_group
-27	Can delete group	7	delete_group
-28	Can view group	7	view_group
-29	Can add user	8	add_user
-30	Can change user	8	change_user
-31	Can delete user	8	delete_user
-32	Can view user	8	view_user
-33	Can add content type	9	add_contenttype
-34	Can change content type	9	change_contenttype
-35	Can delete content type	9	delete_contenttype
-36	Can view content type	9	view_contenttype
-37	Can add session	10	add_session
-38	Can change session	10	change_session
-39	Can delete session	10	delete_session
-40	Can view session	10	view_session
-41	Can add billing	11	add_billing
-42	Can change billing	11	change_billing
-43	Can delete billing	11	delete_billing
-44	Can view billing	11	view_billing
-45	Can add shipping	12	add_shipping
-46	Can change shipping	12	change_shipping
-47	Can delete shipping	12	delete_shipping
-48	Can view shipping	12	view_shipping
+17	Can add shipping	5	add_shipping
+18	Can change shipping	5	change_shipping
+19	Can delete shipping	5	delete_shipping
+20	Can view shipping	5	view_shipping
+21	Can add billing	6	add_billing
+22	Can change billing	6	change_billing
+23	Can delete billing	6	delete_billing
+24	Can view billing	6	view_billing
+25	Can add log entry	7	add_logentry
+26	Can change log entry	7	change_logentry
+27	Can delete log entry	7	delete_logentry
+28	Can view log entry	7	view_logentry
+29	Can add permission	8	add_permission
+30	Can change permission	8	change_permission
+31	Can delete permission	8	delete_permission
+32	Can view permission	8	view_permission
+33	Can add group	9	add_group
+34	Can change group	9	change_group
+35	Can delete group	9	delete_group
+36	Can view group	9	view_group
+37	Can add user	10	add_user
+38	Can change user	10	change_user
+39	Can delete user	10	delete_user
+40	Can view user	10	view_user
+41	Can add content type	11	add_contenttype
+42	Can change content type	11	change_contenttype
+43	Can delete content type	11	delete_contenttype
+44	Can view content type	11	view_contenttype
+45	Can add session	12	add_session
+46	Can change session	12	change_session
+47	Can delete session	12	delete_session
+48	Can view session	12	view_session
 \.
 
 
@@ -860,8 +543,13 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-1	pbkdf2_sha256$390000$MD9hPwKm8N8xVCNKnNODRs$mTBlTG1+Cj2SHK+2RPJ0r4KPdbMM9BCO5kFI6c53Rbc=	2023-01-26 12:33:22.494853+00	f	alex2	Pedro	Alex	test@gmail.com	f	f	2023-01-26 12:33:20.665054+00
-2	pbkdf2_sha256$390000$WbQrAoMFehsfuxnwgCKMbM$VB3bCPyUFFMD3oNOs3fbCSv35Ww5CQRo2sViPtN1hYE=	2023-01-28 19:21:32.531032+00	t	alex	Alex	Santos	alex@gmail.com	f	t	2023-01-26 12:26:20.802558+00
+2	pbkdf2_sha256$390000$fZszBtTuPoPozUbumReeVK$6FAJTJ8GHwT279eYbiScnZTTEpkNPiVrmEGd7o2RsZE=	\N	f	User	User	Bar	user@gmail.com	f	t	2023-01-30 16:40:24.632777+00
+3	pbkdf2_sha256$390000$7tClxu9XwzFKXnu26cC9MO$NNx4iTvqFk0Wd3Ma1LATd/SHs/qChUMs37HsCkNMYIA=	\N	f	Partner 1	Partner	Inou	Partnet@gmail.com	f	t	2023-01-30 16:40:55.020138+00
+4	pbkdf2_sha256$390000$Ue9WIcWcR1GGoROO9uzwPU$L/kVKD7+Cphg3MKdRhmUZ9M0Zu7RQ2fgxWvfL0OEMn4=	\N	f	Inactive	In	Active	inactive@gmail.com	f	f	2023-01-30 16:41:59.91079+00
+1	pbkdf2_sha256$390000$ZjJ8bq3Vcn4xingGHeG3u1$KMkZPuD32qdOpFW+ATUfBvOB74i3Ma4jUU3MwskDtGU=	2023-01-30 16:51:12.008354+00	t	alex	Alex	Santos	Alex@gmail.com	f	t	2023-01-30 16:20:28.344752+00
+5	pbkdf2_sha256$390000$5SewEElyX0tfjzyz7EVlhZ$lqE3jOO/aCEW/EVsgEQXZn37I0rHH9CI1YG6zyJY0FY=	\N	f	Comercial 1	Comercial	Comercial	Comercial@lojinha.com	f	t	2023-01-30 16:54:01.974274+00
+6	pbkdf2_sha256$390000$ifVG5T7EjQ0V2KAr448HkD$N8LDg8NHrv4fdyqs9gdd5qBryfC7E1kW6QAJaUp955s=	\N	f	pending	pending	pending	pending@partner.com	f	f	2023-01-30 16:55:06.413481+00
+7	pbkdf2_sha256$390000$05BKZSUEUMmSN7k6OWWUL1$RhfikI5Z4UdIdlPT8khJngEc/VrTJKLGgsJsfbXHk7o=	2023-01-30 16:55:38.037177+00	f	Alex2	Alex	AAAA	Alex@gg.com	f	t	2023-01-30 16:55:37.652576+00
 \.
 
 
@@ -898,14 +586,14 @@ COPY public.django_content_type (id, app_label, model) FROM stdin;
 2	shop	sales
 3	shop	sales_item
 4	shop	cart_item
-5	admin	logentry
-6	auth	permission
-7	auth	group
-8	auth	user
-9	contenttypes	contenttype
-10	sessions	session
-11	shop	billing
-12	shop	shipping
+5	shop	shipping
+6	shop	billing
+7	admin	logentry
+8	auth	permission
+9	auth	group
+10	auth	user
+11	contenttypes	contenttype
+12	sessions	session
 \.
 
 
@@ -914,29 +602,53 @@ COPY public.django_content_type (id, app_label, model) FROM stdin;
 --
 
 COPY public.django_migrations (id, app, name, applied) FROM stdin;
-1	contenttypes	0001_initial	2023-01-26 12:07:19.574608+00
-2	auth	0001_initial	2023-01-26 12:07:22.732364+00
-3	admin	0001_initial	2023-01-26 12:07:23.574892+00
-4	admin	0002_logentry_remove_auto_add	2023-01-26 12:07:23.744067+00
-5	admin	0003_logentry_add_action_flag_choices	2023-01-26 12:07:24.101671+00
-6	contenttypes	0002_remove_content_type_name	2023-01-26 12:07:24.677111+00
-7	auth	0002_alter_permission_name_max_length	2023-01-26 12:07:25.020322+00
-8	auth	0003_alter_user_email_max_length	2023-01-26 12:07:25.365095+00
-9	auth	0004_alter_user_username_opts	2023-01-26 12:07:25.811591+00
-10	auth	0005_alter_user_last_login_null	2023-01-26 12:07:26.30512+00
-11	auth	0006_require_contenttypes_0002	2023-01-26 12:07:26.726671+00
-12	auth	0007_alter_validators_add_error_messages	2023-01-26 12:07:26.977975+00
-13	auth	0008_alter_user_username_max_length	2023-01-26 12:07:27.440716+00
-14	auth	0009_alter_user_last_name_max_length	2023-01-26 12:07:27.925049+00
-15	auth	0010_alter_group_name_max_length	2023-01-26 12:07:28.343698+00
-16	auth	0011_update_proxy_permissions	2023-01-26 12:07:28.564709+00
-17	auth	0012_alter_user_first_name_max_length	2023-01-26 12:07:29.06176+00
-18	sessions	0001_initial	2023-01-26 12:07:29.628495+00
-19	shop	0001_initial	2023-01-26 12:07:32.046709+00
-20	shop	0002_sales_state_sales_item_promo	2023-01-27 00:11:01.304772+00
-21	shop	0003_shipping_billing	2023-01-27 16:13:59.293871+00
-22	shop	0004_alter_sales_state	2023-01-28 12:57:49.198081+00
-23	shop	0005_shipping_nif	2023-01-28 13:25:13.529093+00
+1	contenttypes	0001_initial	2023-01-30 16:19:24.48783+00
+2	auth	0001_initial	2023-01-30 16:19:24.660483+00
+3	admin	0001_initial	2023-01-30 16:19:24.742715+00
+4	admin	0002_logentry_remove_auto_add	2023-01-30 16:19:24.76312+00
+5	admin	0003_logentry_add_action_flag_choices	2023-01-30 16:19:24.783813+00
+6	contenttypes	0002_remove_content_type_name	2023-01-30 16:19:24.814725+00
+7	auth	0002_alter_permission_name_max_length	2023-01-30 16:19:24.839019+00
+8	auth	0003_alter_user_email_max_length	2023-01-30 16:19:24.868239+00
+9	auth	0004_alter_user_username_opts	2023-01-30 16:19:24.919964+00
+10	auth	0005_alter_user_last_login_null	2023-01-30 16:19:24.942819+00
+11	auth	0006_require_contenttypes_0002	2023-01-30 16:19:24.952416+00
+12	auth	0007_alter_validators_add_error_messages	2023-01-30 16:19:24.977238+00
+13	auth	0008_alter_user_username_max_length	2023-01-30 16:19:25.000654+00
+14	auth	0009_alter_user_last_name_max_length	2023-01-30 16:19:25.02541+00
+15	auth	0010_alter_group_name_max_length	2023-01-30 16:19:25.049347+00
+16	auth	0011_update_proxy_permissions	2023-01-30 16:19:25.072002+00
+17	auth	0012_alter_user_first_name_max_length	2023-01-30 16:19:25.096542+00
+18	sessions	0001_initial	2023-01-30 16:19:25.142112+00
+19	shop	0001_initial	2023-01-30 16:19:25.264103+00
+20	shop	0002_sales_state_sales_item_promo	2023-01-30 16:19:25.283072+00
+21	shop	0003_shipping_billing	2023-01-30 16:19:25.361475+00
+22	shop	0004_alter_sales_state	2023-01-30 16:19:25.380441+00
+\.
+
+
+--
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
+sp5id7zrkfzc03sk3hz9g145q4j7g5ou	.eJxVjDsOwjAQBe_iGll24i8lPWewdr1eHECOFCcV4u4QKQW0b2beSyTY1pq2XpY0kTgLL06_G0J-lLYDukO7zTLPbV0mlLsiD9rldabyvBzu30GFXr91HhDZIJWgA_gxaLCgOYIZHFoTfCQOVpno2BCrUdtCqCxncMjOkhLvD_sPOGs:1pMXRS:qPtG5aOjtj4rXZ7ED5cfQiLpjVG7qahd5iWpeQSPhfk	2023-02-13 16:55:38.039047+00
+\.
+
+
+--
+-- Data for Name: shop_billing; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.shop_billing (id, nif, address, city, zip, country, sale_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: shop_cart_item; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.shop_cart_item (id, quantity, product_id, user_id) FROM stdin;
 \.
 
 
@@ -945,9 +657,34 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 --
 
 COPY public.shop_product (id, price, promo, stock) FROM stdin;
-1	2.00	0	10
-2	2.00	0	8
+1	23.00	0	12
+2	10.00	0	34
 \.
+
+
+--
+-- Data for Name: shop_sales; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.shop_sales (id, date, user_id, state) FROM stdin;
+\.
+
+
+--
+-- Data for Name: shop_sales_item; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.shop_sales_item (id, price, quantity, product_id, sale_id, promo) FROM stdin;
+\.
+
+
+--
+-- Data for Name: shop_shipping; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.shop_shipping (id, address, city, zip, country, sale_id) FROM stdin;
+\.
+
 
 --
 -- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
@@ -1009,28 +746,49 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 12, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 23, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 22, true);
 
 
 --
 -- Name: shop_billing_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shop_billing_id_seq', 8, true);
+SELECT pg_catalog.setval('public.shop_billing_id_seq', 1, false);
 
 
 --
 -- Name: shop_cart_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shop_cart_item_id_seq', 8, true);
+SELECT pg_catalog.setval('public.shop_cart_item_id_seq', 1, false);
 
 
 --
 -- Name: shop_product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shop_product_id_seq', 3, true);
+SELECT pg_catalog.setval('public.shop_product_id_seq', 2, true);
+
+
+--
+-- Name: shop_sales_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.shop_sales_id_seq', 1, false);
+
+
+--
+-- Name: shop_sales_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.shop_sales_item_id_seq', 1, false);
+
+
+--
+-- Name: shop_shipping_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.shop_shipping_id_seq', 1, false);
 
 
 --
@@ -1357,12 +1115,6 @@ CREATE INDEX shop_sales_user_id_e48bdb03 ON public.shop_sales USING btree (user_
 CREATE INDEX shop_shipping_sale_id_904633c7 ON public.shop_shipping USING btree (sale_id);
 
 
---
--- Name: shop_sales_item updatestock; Type: TRIGGER; Schema: public; Owner: postgres
---
-
-CREATE TRIGGER updatestock BEFORE INSERT OR UPDATE ON public.shop_sales_item FOR EACH ROW EXECUTE FUNCTION public.updatestocktgr();
-
 
 --
 -- Name: auth_group_permissions auth_group_permissio_permission_id_84c5c92e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: postgres
@@ -1495,4 +1247,47 @@ ALTER TABLE ONLY public.shop_shipping
 --
 -- PostgreSQL database dump complete
 --
+
+--
+-- Custom data
+--
+
+
+CREATE FUNCTION public.updatestocktgr() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE _stock numeric;
+BEGIN
+	select stock into _stock from shop_product where id = new.product_id;
+	if (_stock - new.quantity) >= 0 then
+		update shop_product set stock = stock - new.quantity where id = new.product_id;
+	else
+		Raise exception 'Quantity ammount higher than stock available';
+	END if;
+		
+    return new;
+END;
+$$;
+
+
+CREATE TRIGGER updatestock 
+BEFORE INSERT OR UPDATE 
+ON public.shop_sales_item 
+FOR EACH ROW 
+EXECUTE FUNCTION public.updatestocktgr();
+
+
+CREATE FUNCTION public.fn_most_bought_today() RETURNS TABLE(product_id integer)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	RETURN QUERY
+		select shop_sales_item.product_id from shop_sales_item
+		join shop_sales on shop_sales.id = shop_sales_item.sale_id
+		where date_trunc('day', shop_sales.date) = date_trunc('day', now())
+		group by shop_sales_item.product_id
+		order by count(*) desc
+		limit 3;
+END;
+$$;
 

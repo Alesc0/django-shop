@@ -18,6 +18,7 @@ def index(request):
     context = {}
     products = DBHandler.list_products()
     context['products'] = products
+    #most_bought_today = DBHandler.most_bought_today()
     if (request.user.is_authenticated):
         if (request.COOKIES.get('cart') is not None):
             cartUtils.convertCart(request)
@@ -87,26 +88,25 @@ def register(request):
     return render(request, "register.html", context={"form": form})
 
 
-def registerComercial(request):
+def registerOther(request):
     if request.user.is_authenticated and not request.user.is_superuser:
         return redirect("/")
     if request.method == "POST":
         form = forms.comercialUserForm(request.POST)
+        print(form.is_valid(),file=sys.stderr)
         if form.is_valid():
             if (form.cleaned_data['password1'] != form.cleaned_data['password2']):
                 messages.error(
                     request, "Unsuccessful registration. Passwords do not match.")
-                return render(request, "registerComercial.html", context={"form": form})
+                return render(request, "register.html", context={"form": form})
             cleanedForm = form.cleaned_data
-            try:
-                user = DBHandler.create_comercial(cleanedForm['username'], cleanedForm['password1'], cleanedForm['first_name'],
-                                                  cleanedForm['last_name'], cleanedForm['email'], cleanedForm['type'], cleanedForm['company'])
-            except:
+            user = DBHandler.create_user(cleanedForm['username'], cleanedForm['password1'], cleanedForm['first_name'],
+                                                  cleanedForm['last_name'], cleanedForm['email'], cleanedForm['type'], cleanedForm['company'],is_active = request.user.is_superuser)
+            if (user is None):
                 form.add_error('username', 'Username already exists.')
-                return render(request, "registerComercial.html", context={"form": form})
-            login(request, user)
+                return render(request, "register.html", context={"form": form})
             messages.success(request, "Registration successful.")
-            return redirect("/")
+            return redirect("admin")
         messages.error(
             request, "Unsuccessful registration. Invalid information.")
     form = forms.comercialUserForm()

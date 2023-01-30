@@ -8,6 +8,7 @@ from django.db import transaction
 from shop.models import Product, Sales, Sales_Item, Billing, Shipping
 from django.utils import timezone
 import shop.cart as cartUtils
+from django.db import connection
 
 env = environ.Env()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -35,26 +36,26 @@ def list_users():
     return users
 
 
-def create_user(username, password, first, last, email, _type=1, company=None, admin=False):
-    user = User.objects.create_user(username=username, password=password,
-                                    email=email, first_name=first, last_name=last, is_superuser=admin)
-    user.save()
-
-    if _type == 1:
+def create_user(username, password, first, last, email, _type=1, company=None, admin=False,is_active=True):
+    try:
+        user = User.objects.create_user(
+            username=username,
+            password=password,
+            email=email,
+            first_name=first,
+            last_name=last,
+            is_superuser=admin,
+            is_active=is_active
+        )
+        user.save()
+    except:
+        return None
+    if _type != 3:
         db.users.insert_one({'_id': user.id, 'type': _type})
     else:
         db.users.insert_one(
             {'_id': user.id, 'type': _type, 'company': company})
     return user
-
-
-def create_comercial(username, password, first, last, email, _type, company):
-    user = User.objects.create_user(
-        username=username, password=password, email=email, first_name=first, last_name=last,)
-    user.save()
-    db.users.insert_one({'_id': user.id, 'type': _type, 'company': company})
-    return user
-
 
 def create_product(name, description, price, stock,  image):
     product = Product(price=price, stock=stock, promo=0)
@@ -80,6 +81,21 @@ def list_products():
         products.append(product)
     return products
 
+def most_bought_today():
+    pg = []
+    res = []
+    c = connection.cursor()
+    
+    try:
+        c.execute("BEGIN")
+        c.callproc("fn_most_bought_today")
+        pg = c.fetchall()
+    finally:
+        c.close()
+    for item in pg:
+        res.append(db.products.find_one({"_id": item[0]}))
+    print(res,file=sys.stderr) 
+    return res
 
 def create_order(user_id, cart):
     user = User.objects.get(id=user_id)

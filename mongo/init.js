@@ -1,23 +1,23 @@
 let error = true;
 
-db = db.getSiblingDB('dbproj');
+db = db.getSiblingDB("dbproj");
 
 let res = [
   db.createCollection("users"),
   db.createCollection("products"),
   db.products.insertOne({
     _id: 1,
-    name: "test",
+    name: "Product 1",
     description:
-      "Sed porttitor lectus nibh. Cras ultricies ligula sed magna dictum porta. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Cras ultricies ligula sed magna dictum porta. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.",
-    image: "69fb6c64-b45a-4f3b-a65e-ed38f24643e0",
+      "Vivamus suscipit tortor eget felis porttitor volutpat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur aliquet quam id dui posuere blandit. Pellentesque in ipsum id orci porta dapibus. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Vivamus suscipit tortor eget felis porttitor volutpat. Nulla porttitor accumsan tincidunt. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus.",
+    image: "94e2a485-b5c9-4d46-a590-b724ff192dbe",
   }),
   db.products.insertOne({
     _id: 2,
-    name: "image",
+    name: "Product 2",
     description:
-      "Sed porttitor lectus nibh. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Vivamus suscipit tortor eget felis porttitor volutpat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. Curabitur aliquet quam id dui posuere blandit. Sed porttitor lectus nibh. Nulla porttitor accumsan tincidunt. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula.",
-    image: "1c009bd5-2679-4efc-a699-4d7b814f053a",
+      "Pellentesque in ipsum id orci porta dapibus. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Cras ultricies ligula sed magna dictum porta. Donec rutrum congue leo eget malesuada. Nulla quis lorem ut libero malesuada feugiat. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Curabitur aliquet quam id dui posuere blandit. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus.",
+    image: "d7aae002-3dbe-4017-b310-19817e751bae",
   }),
   db.users.insertOne({
     _id: 1,
@@ -25,8 +25,29 @@ let res = [
   }),
   db.users.insertOne({
     _id: 2,
+    type: 1,
+  }),
+  db.users.insertOne({
+    _id: 3,
+    type: 3,
+    company: "Company 1",
+  }),
+  db.users.insertOne({
+    _id: 4,
     type: 2,
-    company: "Alex Nation",
+  }),
+  db.users.insertOne({
+    _id: 5,
+    type: 1,
+  }),
+  db.users.insertOne({
+    _id: 6,
+    type: 3,
+    company: "Pending Company Partner",
+  }),
+  db.users.insertOne({
+    _id: 7,
+    type: 1,
   }),
 ];
 
