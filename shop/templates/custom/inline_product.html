@@ -1,7 +1,7 @@
 {% load templates %}
 {% load static %}
 
-<div style="display:flex;
+<div class="product-order" style="display:flex;
     flex-direction:row;
     gap:1em;
     padding-inline:0.5em;
@@ -13,8 +13,8 @@
     <p style="font-weight:bold;font-weight:20px">{{ product.name }}</p>
     <p>{{ product.description|limitChars:100 }}</p>
     {% if product.quantity %}
-    <p>{{product.quantity}}</p>
+    <p id="product-quantity">{{product.quantity}}</p>
     <p> x </p>
     {% endif %}
-    <p style="font-weight:bold;font-size:22px">{{ product.price }}&nbsp€</p>
+    <p id="product-price" style="font-weight:bold;font-size:22px">{{ product.price }}&nbsp€</p>
 </div>

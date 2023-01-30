@@ -47,7 +47,23 @@ $('input[name^="quantity"]').change(function (e) {
 
 $(document).ready(function () {
   updateTotal();
+  updateTotalOrders();
 });
+
+function updateTotalOrders() {
+  $("*[id=order]").each(function () {
+    let total = 0;
+    $(this).children("div[class=product-order]").each(function () {
+      total += parseFloat(
+        $(this).children("p[id=product-quantity]").text() *
+          parseFloat(
+            $(this).children("p[id='product-price']").text().slice(0, -2)
+          )
+      );
+    });
+    $(this).children("#totalprice").text("Total price: " + total.toFixed(2) + "€");
+  });
+}
 
 function updateTotal() {
   let total = 0;

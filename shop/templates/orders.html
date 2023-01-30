@@ -5,17 +5,17 @@
     <summary role="button">
         Order #{{ order.id }} - {{ order.date|date:"d/m/Y" }} - {{ order.state }}
     </summary>
-    <div style="text-align:center">
+    <div style="text-align:center" id="order">
         {% if order.state == 'shipping info necessary' %}
         <a style="display: block;margin-bottom:1em" href="{% url 'checkout_shipping' order.id %}">
             <mark>This order is not complete as its missing the shipping information. Click here to finish setting
-                up
-                the order.</mark>
+                up the order.</mark>
         </a>
         {% endif %}
         {% for product in order.products %}
         {% include 'custom/inline_product.html' with product=product%}
         {% endfor %}
+        <ins style="font-size:x-large;" id="totalprice"></ins>
     </div>
 </details>
 {% endfor %}
