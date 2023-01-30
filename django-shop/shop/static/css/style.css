@@ -10,22 +10,13 @@ html {
 
 .grid-custom {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   grid-gap: 10px;
-}
-
-.product-card {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
 }
 .product-img {
   height: 10em;
   object-fit: fill;
-}
-
-.product-header {
-  margin-bottom: 0.5em;
+  margin: 0 auto;
 }
 
 .product-title {
@@ -46,7 +37,34 @@ html {
   width: fit-content;
 }
 
+.addCart {
+  margin-top: auto;
+}
+
 .product-cart-img {
   width: 5em;
   height: 5em;
+}
+
+article {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+
+article > div {
+  margin: 0;
+  padding: 1em;
+}
+
+article > ul {
+  margin: 0;
+  padding: 1em;
+}
+
+article > header {
+  display: flex;
+  margin: 0;
+  padding: 1em;
 }

@@ -18,7 +18,8 @@ def index(request):
     context = {}
     products = DBHandler.list_products()
     context['products'] = products
-    #most_bought_today = DBHandler.most_bought_today()
+    most_bought_today = DBHandler.most_bought_today()
+    context['most_bought_today'] = most_bought_today
     if (request.user.is_authenticated):
         if (request.COOKIES.get('cart') is not None):
             cartUtils.convertCart(request)

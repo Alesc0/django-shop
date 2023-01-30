@@ -94,7 +94,7 @@ def most_bought_today():
         c.close()
     for item in pg:
         res.append(db.products.find_one({"_id": item[0]}))
-    print(res,file=sys.stderr) 
+    print(res, file=sys.stderr)
     return res
 
 def create_order(user_id, cart):
