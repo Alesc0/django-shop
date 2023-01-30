@@ -9,8 +9,8 @@ Home {% endblock title %} {% block content %}
     <p class="product-title">{{ product.name }}</p>
     <p class="product-body">{{ product.description|limitChars:100 }}</p>
     <div style="display:flex;flex-direction:row;align-items:center;margin-top:1em">
-        <p style="font-weight:500">Quant: {{ product.stock }}</p>
-      <p class="product-price">{{ product.price }} €</p>
+      <p style="font-weight:500">Quant: {{ product.stock }}</p>
+      <p style="margin-left:auto" class="product-price">{{ product.price }} €</p>
     </div>
     {% with getid=product|private:'_id'%}
     <button class="addCart" id="{{ product|private:'_id' }}" {%if product|private:'_id'|findInCart:cart %} disabled 

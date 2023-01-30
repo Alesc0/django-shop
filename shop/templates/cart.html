@@ -11,6 +11,7 @@
     {% include 'cartProduct.html' with product=product%}
     {% endfor %}
     {% if cart|length == 0 %} Your cart is empty {% endif %}
+    <ins style="text-align:center;font-size:x-large" id="totalprice"></ins>
 </div>
 {% if cart|length != 0 and request.user.is_authenticated %}
 <div id="checkoutBtn" style="display:flex;justify-content:center">
