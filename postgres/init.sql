@@ -16,29 +16,9 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- Name: fn_most_bought_date(date, date); Type: FUNCTION; Schema: public; Owner: postgres
---
-
-CREATE FUNCTION public.fn_most_bought_date(date1 date, date2 date) RETURNS TABLE(product_id integer)
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-	RETURN QUERY
-		select shop_sales_item.product_id from shop_sales_item
-		join shop_sales on shop_sales.id = shop_sales_item.sale_id
-		where shop_sales.date <= date1::DATE and shop_sales.date >= date2::DATE
-		group by shop_sales_item.product_id
-		order by count(*) desc
-		limit 3;
-END;
-$$;
-
-
-ALTER FUNCTION public.fn_most_bought_date(date1 date, date2 date) OWNER TO postgres;
 
 --
--- Name: fn_most_bought_date(date, date, integer); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: fn_most_bought_date(character varying, character varying, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION public.fn_most_bought_date(date1 date, date2 date, lim integer) RETURNS TABLE(product_id integer)
@@ -56,49 +36,23 @@ END;
 $$;
 
 
-ALTER FUNCTION public.fn_most_bought_date(date1 date, date2 date, lim integer) OWNER TO postgres;
-
---
--- Name: fn_most_bought_date(character varying, character varying, integer); Type: FUNCTION; Schema: public; Owner: postgres
---
-
-CREATE FUNCTION public.fn_most_bought_date(date1 character varying, date2 character varying, lim integer) RETURNS TABLE(product_id integer)
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-	RETURN QUERY
-		select shop_sales_item.product_id from shop_sales_item
-		join shop_sales on shop_sales.id = shop_sales_item.sale_id
-		where shop_sales.date <= date1::DATE and shop_sales.date >= date2::DATE
-		group by shop_sales_item.product_id
-		order by count(*) desc
-		limit lim;
-END;
-$$;
-
-
 ALTER FUNCTION public.fn_most_bought_date(date1 character varying, date2 character varying, lim integer) OWNER TO postgres;
 
 --
--- Name: fn_most_bought_today(); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: lower_username(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.fn_most_bought_today() RETURNS TABLE(product_id integer)
+CREATE FUNCTION public.lower_username() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
-BEGIN
-	RETURN QUERY
-		select shop_sales_item.product_id from shop_sales_item
-		join shop_sales on shop_sales.id = shop_sales_item.sale_id
-		where date_trunc('day', shop_sales.date) = date_trunc('day', now())
-		group by shop_sales_item.product_id
-		order by count(*) desc
-		limit 3;
-END;
+    AS $$ 
+BEGIN 
+new.username = lower(new.username); 
+return new; 
+end; 
 $$;
 
 
-ALTER FUNCTION public.fn_most_bought_today() OWNER TO postgres;
+ALTER FUNCTION public.lower_username() OWNER TO postgres;
 
 --
 -- Name: updatestocktgr(); Type: FUNCTION; Schema: public; Owner: postgres
@@ -650,13 +604,15 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-2	pbkdf2_sha256$390000$fZszBtTuPoPozUbumReeVK$6FAJTJ8GHwT279eYbiScnZTTEpkNPiVrmEGd7o2RsZE=	\N	f	User	User	Bar	user@gmail.com	f	t	2023-01-30 16:40:24.632777+00
 3	pbkdf2_sha256$390000$7tClxu9XwzFKXnu26cC9MO$NNx4iTvqFk0Wd3Ma1LATd/SHs/qChUMs37HsCkNMYIA=	\N	f	Partner 1	Partner	Inou	Partnet@gmail.com	f	t	2023-01-30 16:40:55.020138+00
 4	pbkdf2_sha256$390000$Ue9WIcWcR1GGoROO9uzwPU$L/kVKD7+Cphg3MKdRhmUZ9M0Zu7RQ2fgxWvfL0OEMn4=	\N	f	Inactive	In	Active	inactive@gmail.com	f	f	2023-01-30 16:41:59.91079+00
 5	pbkdf2_sha256$390000$5SewEElyX0tfjzyz7EVlhZ$lqE3jOO/aCEW/EVsgEQXZn37I0rHH9CI1YG6zyJY0FY=	\N	f	Comercial 1	Comercial	Comercial	Comercial@lojinha.com	f	t	2023-01-30 16:54:01.974274+00
 6	pbkdf2_sha256$390000$ifVG5T7EjQ0V2KAr448HkD$N8LDg8NHrv4fdyqs9gdd5qBryfC7E1kW6QAJaUp955s=	\N	f	pending	pending	pending	pending@partner.com	f	f	2023-01-30 16:55:06.413481+00
 7	pbkdf2_sha256$390000$05BKZSUEUMmSN7k6OWWUL1$RhfikI5Z4UdIdlPT8khJngEc/VrTJKLGgsJsfbXHk7o=	2023-01-30 16:55:38.037177+00	f	Alex2	Alex	AAAA	Alex@gg.com	f	t	2023-01-30 16:55:37.652576+00
-1	pbkdf2_sha256$390000$ZjJ8bq3Vcn4xingGHeG3u1$KMkZPuD32qdOpFW+ATUfBvOB74i3Ma4jUU3MwskDtGU=	2023-01-30 17:15:00.477308+00	t	alex	Alex	Santos	Alex@gmail.com	f	t	2023-01-30 16:20:28.344752+00
+8	pbkdf2_sha256$390000$0eWv8CZT8buzzPT0ci5YSP$FdYRAeCNBMBJlnY2iYVJvm1af/QatycpYLhOewXdaRs=	\N	f	testuser	test	user	testuser@gmail.com	f	f	2023-01-31 17:13:45.436258+00
+2	pbkdf2_sha256$390000$fZszBtTuPoPozUbumReeVK$6FAJTJ8GHwT279eYbiScnZTTEpkNPiVrmEGd7o2RsZE=	2023-01-31 17:56:38.764566+00	f	User	User	Bar	user@gmail.com	f	t	2023-01-30 16:40:24.632777+00
+9	pbkdf2_sha256$390000$PRdyzvcIe3I9tONaBdAtwf$XvfOoKQbFZacUGQ+9pcWeeH5LpIV4MwRnHEMSyw8coY=	2023-01-31 18:03:38.79916+00	f	upperletter	upperletter	profile	upper@gmail.com	f	t	2023-01-31 18:03:38.482042+00
+1	pbkdf2_sha256$390000$ZjJ8bq3Vcn4xingGHeG3u1$KMkZPuD32qdOpFW+ATUfBvOB74i3Ma4jUU3MwskDtGU=	2023-01-31 18:08:04.387028+00	t	alex	Alex	Santos	Alex@gmail.com	f	t	2023-01-30 16:20:28.344752+00
 \.
 
 
@@ -739,7 +695,7 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 --
 
 COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
-ytyrwm35jpl0ct62g67o0o68w9aec969	.eJxVjMsOwiAQRf-FtSG8GVy69xvIMIBUDU1KuzL-uzbpQrf3nHNfLOK2triNssQpszOT7PS7JaRH6TvId-y3mdPc12VKfFf4QQe_zrk8L4f7d9BwtG8dwFshCaq3uihCqYSrniBZ8gaMlmCCzk6RFh4SupSrRiRyQTmRlGDvD8IkN0A:1pMXkC:iBfxJqY6ETIeOtPW1N9V8Zpppln-eJafFcmRhBHdSrY	2023-02-13 17:15:00.480301+00
+1d89zijwejrvcnu7iflj3eg3i1p0vghd	.eJxVjMsOwiAQRf-FtSG8GVy69xvIMIBUDU1KuzL-uzbpQrf3nHNfLOK2triNssQpszOT7PS7JaRH6TvId-y3mdPc12VKfFf4QQe_zrk8L4f7d9BwtG8dwFshCaq3uihCqYSrniBZ8gaMlmCCzk6RFh4SupSrRiRyQTmRlGDvD8IkN0A:1pMv36:uQ7FLPY_dq7bW2XxI-98Odu2NRL0yvhrEywnwFXJ204	2023-02-14 18:08:04.395668+00
 \.
 
 
@@ -759,6 +715,11 @@ COPY public.shop_billing (id, nif, address, city, zip, country, sale_id) FROM st
 --
 
 COPY public.shop_cart_item (id, quantity, product_id, user_id) FROM stdin;
+10	1	7	1
+9	4	5	1
+11	3	8	1
+12	1	1	2
+13	1	5	2
 \.
 
 
@@ -847,7 +808,7 @@ SELECT pg_catalog.setval('public.auth_user_groups_id_seq', 1, false);
 -- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.auth_user_id_seq', 7, true);
+SELECT pg_catalog.setval('public.auth_user_id_seq', 9, true);
 
 
 --
@@ -889,7 +850,7 @@ SELECT pg_catalog.setval('public.shop_billing_id_seq', 3, true);
 -- Name: shop_cart_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shop_cart_item_id_seq', 8, true);
+SELECT pg_catalog.setval('public.shop_cart_item_id_seq', 13, true);
 
 
 --
@@ -1242,6 +1203,13 @@ CREATE INDEX shop_sales_user_id_e48bdb03 ON public.shop_sales USING btree (user_
 --
 
 CREATE INDEX shop_shipping_sale_id_904633c7 ON public.shop_shipping USING btree (sale_id);
+
+
+--
+-- Name: auth_user lower_username; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER lower_username BEFORE INSERT OR UPDATE ON public.auth_user FOR EACH ROW EXECUTE FUNCTION public.lower_username();
 
 
 --

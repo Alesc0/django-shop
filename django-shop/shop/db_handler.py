@@ -23,38 +23,59 @@ def get_user(user_id):
     user = User.objects.get(id=user_id)
     mg = db.users.find_one({'_id': user_id})
     mg.update(user.__dict__)
-    return user
+    return mg
 
-def list_users():
+def list_users(user_id):
     # pagination https://www.mongodb.com/docs/manual/reference/method/cursor.skip/
     users = []
     pg = User.objects.all()
     for mg_user in db.users.find():
         for pg_user in pg:
-            if pg_user.id == mg_user['_id']:
+            if pg_user.id == mg_user['_id'] and mg_user['_id'] != user_id:
                 users.append({**mg_user, **pg_user.__dict__})
     return users
 
 
-def create_user(username, password, first, last, email, _type=1, company=None, admin=False,is_active=True):
+def create_user(username, password, first_name, last_name, email, _type=1,admin=False, company=None,is_active=True):
     try:
         user = User.objects.create_user(
             username=username,
             password=password,
             email=email,
-            first_name=first,
-            last_name=last,
+            first_name=first_name,
+            last_name=last_name,
             is_superuser=admin,
             is_active=is_active
         )
         user.save()
-    except:
+    except Exception as e:
+        print(e, file=sys.stderr)
         return None
     if _type != 3:
         db.users.insert_one({'_id': user.id, 'type': _type})
     else:
         db.users.insert_one(
             {'_id': user.id, 'type': _type, 'company': company})
+    return user
+
+def edit_user(id, username, first_name, last_name, email, _type=1,admin=False, company=None,is_active=True,password=None):
+    try:
+        user = User.objects.get(id=id)
+        user.username=username,
+        user.email=email,
+        user.first_name=first_name,
+        user.last_name=last_name,
+        user.is_superuser=admin,
+        user.is_active=is_active
+        if (password != None):
+            user.set_password(password)
+        user.save()
+    except:
+        return None
+    if _type != 3:
+        db.users.update_one({'_id': user.id}, {'$set': {'type': _type}})
+    else:
+        db.users.update_one({'_id': user.id}, {'$set': {'type': _type, 'company': company}})
     return user
 
 def create_product(name, description, price, stock,  image):

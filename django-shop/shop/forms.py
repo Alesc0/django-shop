@@ -23,6 +23,18 @@ class comercialUserForm(forms.Form):
     type = forms.IntegerField(widget=widget)
     company = forms.CharField(required=False)
 
+class admin_user_form(forms.Form):
+    username = forms.CharField()
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    email = forms.EmailField()
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+    widget=forms.Select(choices=((1,'Comercial 1'),(2,'Comercial 2'),(3,'Partner'),(4,'Admin'),(5,'User')))
+    type = forms.IntegerField(widget=widget)
+    company = forms.CharField(required=False)
+    is_active = forms.BooleanField(required=False)
+
 class productForm(forms.Form):
     name = forms.CharField()
     description = forms.CharField(widget=forms.Textarea)

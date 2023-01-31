@@ -12,13 +12,11 @@ Admin
             Users
         </summary>
         <div class="admin-actions">
-            <a role="button" href="{% url 'add_user' %}">Add Admin</a>
-            <a role="button" href="{% url 'other_user' %}">Add Other</a>
+            <a role="button" href="{% url 'other_user' %}">Add User</a>
         </div>
         {% for user in users %}
-        <div>
-            <h2>{{ user.username }}</h2>
-            <p>{{ user.email }}</p>
+        <div class="list">
+            {% include 'custom/inline_user.html' with user=user%}
         </div>
         {% endfor %}
         </div>
@@ -28,12 +26,11 @@ Admin
             Produtos
         </summary>
         <div class="admin-actions">
-            <a role="button" href="/addProduct">Add Product</a>
+            <a role="button" href="/add_product">Add Product</a>
         </div>
         {% for product in products %}
         {% include 'custom/inline_product.html' with product=product%}
         {% endfor %}
-        </div>
     </details>
     </div>
 </main>

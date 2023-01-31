@@ -75,8 +75,35 @@ article > header {
 }
 
 .admin-actions {
-  display:flex;
+  display: flex;
   flex-direction: row;
-  gap:1em;
+  gap: 1em;
   margin-bottom: 2em;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+}
+
+.inline-usr {
+  display: flex;
+  flex-direction: row;
+  border-radius: 5em;
+  padding-inline: 0.5em;
+  margin-bottom: 1em;
+}
+
+.inline-usr > * {
+  margin: 0.2em;
+}
+.admin-background {
+  background-color: rgba(255, 247, 0, 0.761);
+}
+
+.profile-header {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0 auto;
 }

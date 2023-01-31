@@ -10,10 +10,11 @@ urlpatterns = [
     path('register', views.register, name='register'),
     path('logout', views.logout, name='logout'),
     path('admin', views.admin, name='admin'),
-    path('addProduct', views.addProduct, name='addProduct'),
+    path('product', views.add_product, name='add_product'),
     path('product/<id>', views.product, name='product'),
     path('product/edit/<id>', views.edit_product, name='edit_product'),
-    path('addUser', views.addUser, name='add_user'),
+    path('user', views.add_user, name='add_user'),
+    path('user/edit/<id>', views.edit_user, name='edit_user'),
     path('otherUser', views.registerOther, name='other_user'),
     path('cart', views.cart, name='cart'),
     path('addToCart/<id>', views.addToCart, name='addToCart'),
@@ -22,6 +23,7 @@ urlpatterns = [
     path('checkout/billing', views.checkoutBilling, name='checkout_billing'),
     path('checkout/shipping/<sale_id>', views.checkoutShipping, name='checkout_shipping'),
     path('orders', views.orders, name='orders'),
+    path('profile', views.profile, name='profile'),
     
 ]
 

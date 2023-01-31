@@ -1,0 +1,9 @@
+{% load templates %}
+{% load static %}
+
+<div class="inline-usr {% if user.is_superuser %}  admin-background {% endif %}">
+    <p style="font-weight:bold;font-weight:20px">
+        <a href="{% url 'edit_user' user.id %}">{{user.first_name}} {{user.last_name}}</a>
+    </p>
+    <p>{{user.email}}</p>
+</div>

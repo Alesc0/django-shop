@@ -1,3 +1,25 @@
 {% extends 'base.html' %} {% block title %} Profile {% endblock title %}
-{% block content %}
+{%block content %}
+{% if form != None %}
+<form method="POST">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit">Register</button>
+</form>
+{% else %}
+<article style="text-align:center">
+    <header class="profile-header">{{user.first_name}} {{user.last_name}}</header>
+    <div>
+        <small>Email </small>
+        <p>{{ user.email }}</p>
+        <small>Username </small>
+        <p>{{ user.username }}</p>
+        <small>Member since </small>
+        <p>{{ user.date_joined }}</p>
+        <small>Role</small>
+        <p>{{ user.role }}</p>
+
+        <a role="button" href="{% url 'edit_user' user.id %}">Change</a>
+    </div>
+</article>
+{% endif %}
 {% endblock content %}

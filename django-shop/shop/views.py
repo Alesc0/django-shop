@@ -58,7 +58,7 @@ def admin(request):
         return redirect("/login")
     if not request.user.is_superuser:
         return redirect("/")
-    users = DBHandler.list_users()
+    users = DBHandler.list_users(request.user.id)
     products = DBHandler.list_products()
     return render(request, 'admin.html', context={'users': users, 'products': products})
 
@@ -86,21 +86,30 @@ def register(request):
     if request.method == "POST":
         form = forms.registerForm(request.POST)
         if form.is_valid():
+            
             if (form.cleaned_data['password1'] != form.cleaned_data['password2']):
                 form.add_error('password1', 'Passwords do not match.')
-                form.add_error('password2', 'Passwords do not match.')
                 return render(request, "register.html", context={"form": form})
+            
             cleanedForm = form.cleaned_data
-            try:
-                user = DBHandler.create_user(cleanedForm['username'], cleanedForm['password1'],
-                                             cleanedForm['first_name'], cleanedForm['last_name'], cleanedForm['email'])
-            except:
+            
+            data = {}
+            data['username'] = cleanedForm['username']
+            data['password'] = cleanedForm['password1']
+            data['first_name'] = cleanedForm['first_name']
+            data['last_name'] = cleanedForm['last_name']
+            data['email'] = cleanedForm['email']
+            data['is_active'] = True
+            data['_type'] = 5
+
+            user = DBHandler.create_user(**data)
+    
+            if (user is None):
                 form.add_error('username', 'Username already exists.')
                 return render(request, "register.html", context={"form": form})
             login(request, user)
-            return redirect("/")
-        messages.error(
-            request, "Unsuccessful registration. Invalid information.")
+            return redirect("index")
+
     form = forms.registerForm()
     return render(request, "register.html", context={"form": form})
 
@@ -109,28 +118,44 @@ def registerOther(request):
     if request.user.is_authenticated and not request.user.is_superuser:
         return redirect("/")
     if request.method == "POST":
-        form = forms.comercialUserForm(request.POST)
-        print(form.is_valid(),file=sys.stderr)
+        form = forms.admin_user_form(request.POST) if request.user.is_superuser else forms.comercialUserForm(request.POST)
+        
         if form.is_valid():
+            
             if (form.cleaned_data['password1'] != form.cleaned_data['password2']):
-                messages.error(
-                    request, "Unsuccessful registration. Passwords do not match.")
+                form.add_error('password1', 'Passwords do not match.')
                 return render(request, "register.html", context={"form": form})
+            
             cleanedForm = form.cleaned_data
-            user = DBHandler.create_user(cleanedForm['username'], cleanedForm['password1'], cleanedForm['first_name'],
-                                                  cleanedForm['last_name'], cleanedForm['email'], cleanedForm['type'], cleanedForm['company'],is_active = request.user.is_superuser)
+            
+            data = {}
+            data['username'] = cleanedForm['username']
+            data['password'] = cleanedForm['password1']
+            data['first_name'] = cleanedForm['first_name']
+            data['last_name'] = cleanedForm['last_name']
+            data['email'] = cleanedForm['email']
+            data['is_active'] = cleanedForm['is_active'] or False
+            
+            if (cleanedForm['type'] == 4):
+                data['admin'] = True
+            else:
+                data['_type'] = cleanedForm['type']
+            
+            if (cleanedForm['type'] == 3):
+                data['company'] = cleanedForm['company']
+            
+            user = DBHandler.create_user(**data)
+            
             if (user is None):
                 form.add_error('username', 'Username already exists.')
                 return render(request, "register.html", context={"form": form})
-            messages.success(request, "Registration successful.")
             return redirect("admin")
-        messages.error(
-            request, "Unsuccessful registration. Invalid information.")
-    form = forms.comercialUserForm()
+    
+    form = forms.admin_user_form() if request.user.is_superuser else forms.comercialUserForm()    
     return render(request, "register.html", context={"form": form})
 
 
-def addProduct(request):
+def add_product(request):
     if request.method == "POST":
         form = forms.productForm(request.POST, request.FILES)
         img = request.FILES['image']
@@ -141,13 +166,11 @@ def addProduct(request):
             DBHandler.create_product(form.cleaned_data['name'], form.cleaned_data['description'],
                                      form.cleaned_data['price'], form.cleaned_data['stock'], upload_name)
             return redirect("/")
-        messages.error(
-            request, "Unsuccessful product addition. Invalid information.")
     form = forms.productForm()
     return render(request, "product.html", context={"form": form})
 
 
-def addUser(request):
+def add_user(request):
     if request.method == "POST":
         form = forms.registerForm(request.POST)
         if form.is_valid():
@@ -158,8 +181,42 @@ def addUser(request):
         messages.error(
             request, "Unsuccessful user addition. Invalid information.")
     form = forms.registerForm()
-    return render(request, "addUser.html", context={"form": form})
+    return render(request, "user.html", context={"form": form})
 
+def edit_user(request,id):
+    if request.method == "POST":
+        form = forms.admin_user_form(request.POST)
+        if form.is_valid():
+            
+            if (form.cleaned_data['password1'] != form.cleaned_data['password2']):
+                form.add_error('password1', 'Passwords do not match.')
+                return render(request, "register.html", context={"form": form})
+            
+            cleanedForm = form.cleaned_data
+            
+            data = {}
+            data['username'] = cleanedForm['username']
+            data['password'] = cleanedForm['password1']
+            data['first_name'] = cleanedForm['first_name']
+            data['last_name'] = cleanedForm['last_name']
+            data['email'] = cleanedForm['email']
+            data['is_active'] = cleanedForm['is_active'] or False
+            data['_type'] = cleanedForm['type']
+            
+            if (cleanedForm['type'] == 4):
+                data['admin'] = True
+            if (cleanedForm['type'] == 3):
+                data['company'] = cleanedForm['company']
+            
+            DBHandler.edit_user(id, **data)
+    
+            if (user is None):
+                form.add_error('username', 'Username already exists.')
+                return render(request, "register.html", context={"form": form})
+            return redirect("admin")
+    user = DBHandler.get_user(int(id))
+    form = forms.admin_user_form(initial=user) if request.user.is_superuser else forms.registerForm(initial=user)
+    return render(request, "user.html", context={"form": form})
 
 def cart(request):
     cart = cartUtils.getCart(request)
@@ -292,3 +349,18 @@ def edit_product(request,id):
             return redirect("index")
     form = forms.productForm(initial=product)
     return render(request, "product.html", context={"form": form, "product": product})
+
+def profile(request):
+    user = DBHandler.get_user(request.user.id)
+    user_type = user['type']
+    if user_type == 1:
+        user['role'] = 'Comercial 1'
+    elif user_type == 2:
+        user['role'] = 'Comercial 2'
+    elif user_type == 3:
+        user['role'] = 'Partner'
+    elif user_type == 4:
+        user['role'] = 'Admin'
+    else:
+        user['role'] = 'User'
+    return render(request, 'profile.html', context={'user': user})

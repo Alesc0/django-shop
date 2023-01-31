@@ -86,7 +86,8 @@ $(document).ready(function () {
   if ($("select[name='type']").val() != 3) {
     el = $("#id_company");
     el.attr("required", false);
-    el.parent().hide();
+    $('label[for="id_company"]').hide()
+    $("#id_company").hide()
   }
 });
 
@@ -94,10 +95,12 @@ $("select[name='type'").change(function (e) {
   if ($(this).val() == 3) {
     el = $("#id_company");
     el.attr("required", true);
-    el.parent().show();
+    $('label[for="id_company"]').show()
+    $("#id_company").show()
   } else {
     el = $("#id_company");
     el.attr("required", false);
-    el.parent().hide();
+    $('label[for="id_company"]').hide()
+    $("#id_company").hide()
   }
 });
