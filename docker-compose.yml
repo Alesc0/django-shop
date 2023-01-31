@@ -37,8 +37,7 @@ services:
     depends_on:
       - mongodb
   mongodb:
-    build:
-      context: ./mongo
+    image: mongo:latest
     container_name: mongodb
     restart: always
     environment:
@@ -46,3 +45,13 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: password
     ports:
       - "27018:27017"
+  mongo_seed:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: username
+      MONGO_INITDB_ROOT_PASSWORD: password
+    links:
+      - mongodb
+    volumes:
+      - ./mongo:/mongo-seed
+    command: bash -c "chmod +x mongo-seed/init.sh && mongo-seed/init.sh"

@@ -16,6 +16,113 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: fn_most_bought_date(date, date); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.fn_most_bought_date(date1 date, date2 date) RETURNS TABLE(product_id integer)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	RETURN QUERY
+		select shop_sales_item.product_id from shop_sales_item
+		join shop_sales on shop_sales.id = shop_sales_item.sale_id
+		where shop_sales.date <= date1::DATE and shop_sales.date >= date2::DATE
+		group by shop_sales_item.product_id
+		order by count(*) desc
+		limit 3;
+END;
+$$;
+
+
+ALTER FUNCTION public.fn_most_bought_date(date1 date, date2 date) OWNER TO postgres;
+
+--
+-- Name: fn_most_bought_date(date, date, integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.fn_most_bought_date(date1 date, date2 date, lim integer) RETURNS TABLE(product_id integer)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	RETURN QUERY
+		select shop_sales_item.product_id from shop_sales_item
+		join shop_sales on shop_sales.id = shop_sales_item.sale_id
+		where shop_sales.date <= date1::DATE and shop_sales.date >= date2::DATE
+		group by shop_sales_item.product_id
+		order by count(*) desc
+		limit lim;
+END;
+$$;
+
+
+ALTER FUNCTION public.fn_most_bought_date(date1 date, date2 date, lim integer) OWNER TO postgres;
+
+--
+-- Name: fn_most_bought_date(character varying, character varying, integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.fn_most_bought_date(date1 character varying, date2 character varying, lim integer) RETURNS TABLE(product_id integer)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	RETURN QUERY
+		select shop_sales_item.product_id from shop_sales_item
+		join shop_sales on shop_sales.id = shop_sales_item.sale_id
+		where shop_sales.date <= date1::DATE and shop_sales.date >= date2::DATE
+		group by shop_sales_item.product_id
+		order by count(*) desc
+		limit lim;
+END;
+$$;
+
+
+ALTER FUNCTION public.fn_most_bought_date(date1 character varying, date2 character varying, lim integer) OWNER TO postgres;
+
+--
+-- Name: fn_most_bought_today(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.fn_most_bought_today() RETURNS TABLE(product_id integer)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	RETURN QUERY
+		select shop_sales_item.product_id from shop_sales_item
+		join shop_sales on shop_sales.id = shop_sales_item.sale_id
+		where date_trunc('day', shop_sales.date) = date_trunc('day', now())
+		group by shop_sales_item.product_id
+		order by count(*) desc
+		limit 3;
+END;
+$$;
+
+
+ALTER FUNCTION public.fn_most_bought_today() OWNER TO postgres;
+
+--
+-- Name: updatestocktgr(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.updatestocktgr() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE _stock numeric;
+BEGIN
+	select stock into _stock from shop_product where id = new.product_id;
+	if (_stock - new.quantity) >= 0 then
+		update shop_product set stock = stock - new.quantity where id = new.product_id;
+	else
+		Raise exception 'Quantity ammount higher than stock available';
+	END if;
+		
+    return new;
+END;
+$$;
+
+
+ALTER FUNCTION public.updatestocktgr() OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -546,10 +653,10 @@ COPY public.auth_user (id, password, last_login, is_superuser, username, first_n
 2	pbkdf2_sha256$390000$fZszBtTuPoPozUbumReeVK$6FAJTJ8GHwT279eYbiScnZTTEpkNPiVrmEGd7o2RsZE=	\N	f	User	User	Bar	user@gmail.com	f	t	2023-01-30 16:40:24.632777+00
 3	pbkdf2_sha256$390000$7tClxu9XwzFKXnu26cC9MO$NNx4iTvqFk0Wd3Ma1LATd/SHs/qChUMs37HsCkNMYIA=	\N	f	Partner 1	Partner	Inou	Partnet@gmail.com	f	t	2023-01-30 16:40:55.020138+00
 4	pbkdf2_sha256$390000$Ue9WIcWcR1GGoROO9uzwPU$L/kVKD7+Cphg3MKdRhmUZ9M0Zu7RQ2fgxWvfL0OEMn4=	\N	f	Inactive	In	Active	inactive@gmail.com	f	f	2023-01-30 16:41:59.91079+00
-1	pbkdf2_sha256$390000$ZjJ8bq3Vcn4xingGHeG3u1$KMkZPuD32qdOpFW+ATUfBvOB74i3Ma4jUU3MwskDtGU=	2023-01-30 16:51:12.008354+00	t	alex	Alex	Santos	Alex@gmail.com	f	t	2023-01-30 16:20:28.344752+00
 5	pbkdf2_sha256$390000$5SewEElyX0tfjzyz7EVlhZ$lqE3jOO/aCEW/EVsgEQXZn37I0rHH9CI1YG6zyJY0FY=	\N	f	Comercial 1	Comercial	Comercial	Comercial@lojinha.com	f	t	2023-01-30 16:54:01.974274+00
 6	pbkdf2_sha256$390000$ifVG5T7EjQ0V2KAr448HkD$N8LDg8NHrv4fdyqs9gdd5qBryfC7E1kW6QAJaUp955s=	\N	f	pending	pending	pending	pending@partner.com	f	f	2023-01-30 16:55:06.413481+00
 7	pbkdf2_sha256$390000$05BKZSUEUMmSN7k6OWWUL1$RhfikI5Z4UdIdlPT8khJngEc/VrTJKLGgsJsfbXHk7o=	2023-01-30 16:55:38.037177+00	f	Alex2	Alex	AAAA	Alex@gg.com	f	t	2023-01-30 16:55:37.652576+00
+1	pbkdf2_sha256$390000$ZjJ8bq3Vcn4xingGHeG3u1$KMkZPuD32qdOpFW+ATUfBvOB74i3Ma4jUU3MwskDtGU=	2023-01-30 17:15:00.477308+00	t	alex	Alex	Santos	Alex@gmail.com	f	t	2023-01-30 16:20:28.344752+00
 \.
 
 
@@ -632,7 +739,7 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 --
 
 COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
-sp5id7zrkfzc03sk3hz9g145q4j7g5ou	.eJxVjDsOwjAQBe_iGll24i8lPWewdr1eHECOFCcV4u4QKQW0b2beSyTY1pq2XpY0kTgLL06_G0J-lLYDukO7zTLPbV0mlLsiD9rldabyvBzu30GFXr91HhDZIJWgA_gxaLCgOYIZHFoTfCQOVpno2BCrUdtCqCxncMjOkhLvD_sPOGs:1pMXRS:qPtG5aOjtj4rXZ7ED5cfQiLpjVG7qahd5iWpeQSPhfk	2023-02-13 16:55:38.039047+00
+ytyrwm35jpl0ct62g67o0o68w9aec969	.eJxVjMsOwiAQRf-FtSG8GVy69xvIMIBUDU1KuzL-uzbpQrf3nHNfLOK2triNssQpszOT7PS7JaRH6TvId-y3mdPc12VKfFf4QQe_zrk8L4f7d9BwtG8dwFshCaq3uihCqYSrniBZ8gaMlmCCzk6RFh4SupSrRiRyQTmRlGDvD8IkN0A:1pMXkC:iBfxJqY6ETIeOtPW1N9V8Zpppln-eJafFcmRhBHdSrY	2023-02-13 17:15:00.480301+00
 \.
 
 
@@ -641,6 +748,9 @@ sp5id7zrkfzc03sk3hz9g145q4j7g5ou	.eJxVjDsOwjAQBe_iGll24i8lPWewdr1eHECOFCcV4u4QKQ
 --
 
 COPY public.shop_billing (id, nif, address, city, zip, country, sale_id) FROM stdin;
+1	123123123	Address	Viseu	3213-123	Portugal	1
+2	324123123	Urbanização Vilabeira, Bloco 7 RC /E	Biseu	3213-123	Portugal	3
+3	312123123	123	Biseu	3213-123	Portugalou	4
 \.
 
 
@@ -657,8 +767,14 @@ COPY public.shop_cart_item (id, quantity, product_id, user_id) FROM stdin;
 --
 
 COPY public.shop_product (id, price, promo, stock) FROM stdin;
-1	23.00	0	12
-2	10.00	0	34
+2	10.00	0	28
+1	23.00	0	10
+3	12.00	0	0
+7	4.00	0	40
+6	200.00	0	0
+5	5.00	0	14
+4	3.00	0	21
+8	20.00	0	8
 \.
 
 
@@ -667,6 +783,9 @@ COPY public.shop_product (id, price, promo, stock) FROM stdin;
 --
 
 COPY public.shop_sales (id, date, user_id, state) FROM stdin;
+1	2023-01-30 17:15:41.375989+00	1	awaiting approval
+3	2023-01-20 11:19:16.548122+00	1	awaiting approval
+4	2023-01-31 11:22:14.187144+00	1	awaiting approval
 \.
 
 
@@ -675,6 +794,13 @@ COPY public.shop_sales (id, date, user_id, state) FROM stdin;
 --
 
 COPY public.shop_sales_item (id, price, quantity, product_id, sale_id, promo) FROM stdin;
+1	10.00	3	2	1	0
+2	23.00	1	1	1	0
+5	4.00	5	7	3	0
+6	200.00	1	6	3	0
+7	5.00	3	5	3	0
+8	3.00	1	4	4	0
+9	20.00	1	8	4	0
 \.
 
 
@@ -683,6 +809,9 @@ COPY public.shop_sales_item (id, price, quantity, product_id, sale_id, promo) FR
 --
 
 COPY public.shop_shipping (id, address, city, zip, country, sale_id) FROM stdin;
+1	Address	Viseu	3213-123	Portugal	1
+2	Urbanização Vilabeira, Bloco 7 RC /E	Biseu	3213-123	Portugal	3
+3	123	Biseu	3213-123	Portugalou	4
 \.
 
 
@@ -753,42 +882,42 @@ SELECT pg_catalog.setval('public.django_migrations_id_seq', 22, true);
 -- Name: shop_billing_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shop_billing_id_seq', 1, false);
+SELECT pg_catalog.setval('public.shop_billing_id_seq', 3, true);
 
 
 --
 -- Name: shop_cart_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shop_cart_item_id_seq', 1, false);
+SELECT pg_catalog.setval('public.shop_cart_item_id_seq', 8, true);
 
 
 --
 -- Name: shop_product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shop_product_id_seq', 2, true);
+SELECT pg_catalog.setval('public.shop_product_id_seq', 8, true);
 
 
 --
 -- Name: shop_sales_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shop_sales_id_seq', 1, false);
+SELECT pg_catalog.setval('public.shop_sales_id_seq', 4, true);
 
 
 --
 -- Name: shop_sales_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shop_sales_item_id_seq', 1, false);
+SELECT pg_catalog.setval('public.shop_sales_item_id_seq', 9, true);
 
 
 --
 -- Name: shop_shipping_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shop_shipping_id_seq', 1, false);
+SELECT pg_catalog.setval('public.shop_shipping_id_seq', 3, true);
 
 
 --
@@ -1115,6 +1244,12 @@ CREATE INDEX shop_sales_user_id_e48bdb03 ON public.shop_sales USING btree (user_
 CREATE INDEX shop_shipping_sale_id_904633c7 ON public.shop_shipping USING btree (sale_id);
 
 
+--
+-- Name: shop_sales_item updatestock; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER updatestock BEFORE INSERT OR UPDATE ON public.shop_sales_item FOR EACH ROW EXECUTE FUNCTION public.updatestocktgr();
+
 
 --
 -- Name: auth_group_permissions auth_group_permissio_permission_id_84c5c92e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: postgres
@@ -1247,47 +1382,4 @@ ALTER TABLE ONLY public.shop_shipping
 --
 -- PostgreSQL database dump complete
 --
-
---
--- Custom data
---
-
-
-CREATE FUNCTION public.updatestocktgr() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-DECLARE _stock numeric;
-BEGIN
-	select stock into _stock from shop_product where id = new.product_id;
-	if (_stock - new.quantity) >= 0 then
-		update shop_product set stock = stock - new.quantity where id = new.product_id;
-	else
-		Raise exception 'Quantity ammount higher than stock available';
-	END if;
-		
-    return new;
-END;
-$$;
-
-
-CREATE TRIGGER updatestock 
-BEFORE INSERT OR UPDATE 
-ON public.shop_sales_item 
-FOR EACH ROW 
-EXECUTE FUNCTION public.updatestocktgr();
-
-
-CREATE or replace FUNCTION public.fn_most_bought_date(date1 date,date2 date,lim integer) RETURNS TABLE(product_id integer)
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-	RETURN QUERY
-		select shop_sales_item.product_id from shop_sales_item
-		join shop_sales on shop_sales.id = shop_sales_item.sale_id
-		where shop_sales.date <= date1::DATE and shop_sales.date >= date2::DATE
-		group by shop_sales_item.product_id
-		order by count(*) desc
-		limit lim;
-END;
-$$;
 
