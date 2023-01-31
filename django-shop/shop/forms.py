@@ -23,7 +23,7 @@ class comercialUserForm(forms.Form):
     type = forms.IntegerField(widget=widget)
     company = forms.CharField(required=False)
 
-class addProductForm(forms.Form):
+class productForm(forms.Form):
     name = forms.CharField()
     description = forms.CharField(widget=forms.Textarea)
     stock = forms.IntegerField(min_value=0)

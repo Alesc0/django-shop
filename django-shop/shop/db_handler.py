@@ -81,20 +81,36 @@ def list_products():
         products.append(product)
     return products
 
-def most_bought_today():
+def most_bought_date(date1,date2,lim):
     pg = []
     res = []
     c = connection.cursor()
     
     try:
         c.execute("BEGIN")
-        c.callproc("fn_most_bought_today")
+        c.callproc("fn_most_bought_date", (date1,date2,lim))
         pg = c.fetchall()
+        c.execute("COMMIT")
     finally:
         c.close()
-    for item in pg:
-        res.append(db.products.find_one({"_id": item[0]}))
-    print(res, file=sys.stderr)
+        for item in pg:
+            res.append(db.products.find_one({"_id": item[0]}))
+    return res
+
+def get_products_in_promo():
+    pg = []
+    res = []
+    c = connection.cursor()
+    
+    try:
+        c.execute("BEGIN")
+        c.callproc("fn_products_in_promo")
+        pg = c.fetchall()
+        c.execute("COMMIT")
+    finally:
+        c.close()
+        for item in pg:
+            res.append(db.products.find_one({"_id": item[0]}))
     return res
 
 def create_order(user_id, cart):

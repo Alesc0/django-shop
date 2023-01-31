@@ -8,10 +8,15 @@ html {
   margin: 0;
 }
 
+.container {
+  padding-block: 1.5em;
+}
+
 .grid-custom {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 10px;
+  flex: 3;
 }
 .product-img {
   height: 10em;
@@ -67,4 +72,11 @@ article > header {
   display: flex;
   margin: 0;
   padding: 1em;
+}
+
+.admin-actions {
+  display:flex;
+  flex-direction: row;
+  gap:1em;
+  margin-bottom: 2em;
 }

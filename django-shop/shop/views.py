@@ -12,14 +12,30 @@ import shop.forms as forms
 from django.core.files.storage import FileSystemStorage
 import uuid
 from django.db import transaction
+import datetime
+import random
 
 
 def index(request):
     context = {}
     products = DBHandler.list_products()
     context['products'] = products
-    most_bought_today = DBHandler.most_bought_today()
+    
+    date1 = datetime.datetime.now()
+    date2 = datetime.datetime.now() - datetime.timedelta(days=1)
+    most_bought_today = DBHandler.most_bought_date(date1.date(),date2.date(),5)
+    date3 = datetime.datetime.now() - datetime.timedelta(days=30)
+    recomendations = DBHandler.most_bought_date(date1.date(),date3.date(),10)
+    
+    for item in most_bought_today:
+        recomendations.remove(item)
+    
+    while len(recomendations) > 2:
+        rand = random.randint(0,len(recomendations)-1)        
+        del recomendations[rand]
+        
     context['most_bought_today'] = most_bought_today
+    context['recomendations'] = recomendations
     if (request.user.is_authenticated):
         if (request.COOKIES.get('cart') is not None):
             cartUtils.convertCart(request)
@@ -116,7 +132,7 @@ def registerOther(request):
 
 def addProduct(request):
     if request.method == "POST":
-        form = forms.addProductForm(request.POST, request.FILES)
+        form = forms.productForm(request.POST, request.FILES)
         img = request.FILES['image']
         if form.is_valid():
             fss = FileSystemStorage()
@@ -127,7 +143,7 @@ def addProduct(request):
             return redirect("/")
         messages.error(
             request, "Unsuccessful product addition. Invalid information.")
-    form = forms.addProductForm()
+    form = forms.productForm()
     return render(request, "product.html", context={"form": form})
 
 
@@ -240,3 +256,39 @@ def checkoutShipping(request, sale_id):
 def orders(request):
     orders = DBHandler.get_orders(request.user.id)
     return render(request, 'orders.html', context={'orders': orders})
+
+def product(request,id):
+    context = {}
+    product,_ = DBHandler.get_product(id)
+    
+    date1 = datetime.datetime.now()
+    date2 = datetime.datetime.now() - datetime.timedelta(days=1)
+    most_bought_today = DBHandler.most_bought_date(date1.date(),date2.date(),5)
+    date3 = datetime.datetime.now() - datetime.timedelta(days=30)
+    recomendations = DBHandler.most_bought_date(date1.date(),date3.date(),10)
+    
+    for item in most_bought_today:
+        recomendations.remove(item)
+    
+    while len(recomendations) > 2:
+        rand = random.randint(0,len(recomendations)-1)        
+        del recomendations[rand]
+        
+    context['most_bought_today'] = most_bought_today
+    context['recomendations'] = recomendations
+    
+    context['product'] = product
+    return render(request, 'product.html', context)
+
+def edit_product(request,id):
+    context = {}
+    product,_ = DBHandler.get_product(id)
+    context['product'] = product
+    if request.method == "POST":
+        form = forms.editProductForm(request.POST)
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            DBHandler.edit_product(id, cleaned_data['name'], cleaned_data['description'], cleaned_data['price'], cleaned_data['stock'])
+            return redirect("index")
+    form = forms.productForm(initial=product)
+    return render(request, "product.html", context={"form": form, "product": product})

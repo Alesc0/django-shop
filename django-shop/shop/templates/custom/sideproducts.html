@@ -1,0 +1,25 @@
+{% load templates %}
+<div style="display:flex;flex-direction:column;flex:1;gap:2em">
+    <article>
+        <header>Most bought today</header>
+        <div>
+            <ul>
+                {% for product in most_bought_today %}
+                <li><a href="{% url 'product' product|private:'_id'%}">{{ product.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </article>
+    {% if recomendations|length > 0 %}
+    <article>
+        <header>Recomendation</header>
+        <div>
+            <ul>
+                {% for product in recomendations %}
+                <li><a href="{% url 'product' product|private:'_id'%}">{{ product.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </article>
+    {% endif %}
+</div>

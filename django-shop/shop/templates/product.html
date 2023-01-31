@@ -1,7 +1,49 @@
-{% extends 'base.html' %} {% block title %} Register {% endblock title %}
+{% extends 'base.html' %}{% load templates %} {% load static %} {% block title %} Product {% endblock title %}
 {%block content %}
+{% if form != None %}
 <form method="POST" enctype="multipart/form-data">
   {% csrf_token %} {{ form.as_table }}
-  <button type="submit">Register</button>
+  <button type="submit">
+    {% if product is None %}
+    Register
+    {% else %}
+    Edit
+    {% endif %}
+  </button>
 </form>
+{% else %}
+<div style="display:flex;flex-direction:row;gap:5em">
+  <article style="width:70%;margin:0 auto;padding:3em">
+    <header>
+      <img class="product-img" src="{% get_media_prefix %}/{{product.image}}.jpg" alt="{{ product.name }}">
+    </header>
+    <div>
+      <h1>{{product.name}}</h1>
+      <p>{{ product.description }}</p>
+      <div style="display:flex;flex-direction:row;align-items:center;margin-top:1em">
+        <p style="font-weight:500">Quant: {{ product.stock }}</p>
+        <p style="margin-left:auto" class="product-price">{{ product.price }} €</p>
+      </div>
+      <div style="display:flex;flex-direction:row;gap:1em">
+        {% with getid=product|private:'_id'%}
+        <button class="addCart" style="width:fit-content" id="{{ product|private:'_id' }}" 
+        {% if product|private:'_id'|findInCart:cart or product.stock == 0 %} disabled {% endif %}>
+          {%if product|private:'_id'|findInCart:cart %}
+          Already in cart
+          {% elif product.stock == 0 %}
+          Out of stock
+          {% else %}
+          Add To Cart
+          {% endif %}
+        </button>
+        {% endwith %}
+        {% if user.is_superuser %}
+        <a role="button" href="{% url 'edit_product' product|private:'_id'%}">Edit</a>
+        {% endif %}
+      </div>
+    </div>
+  </article>
+  {% include 'custom/sideproducts.html' %}
+</div>
+{% endif %}
 {% endblock content %}

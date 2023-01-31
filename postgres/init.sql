@@ -1277,17 +1277,17 @@ FOR EACH ROW
 EXECUTE FUNCTION public.updatestocktgr();
 
 
-CREATE FUNCTION public.fn_most_bought_today() RETURNS TABLE(product_id integer)
+CREATE or replace FUNCTION public.fn_most_bought_date(date1 date,date2 date,lim integer) RETURNS TABLE(product_id integer)
     LANGUAGE plpgsql
     AS $$
 BEGIN
 	RETURN QUERY
 		select shop_sales_item.product_id from shop_sales_item
 		join shop_sales on shop_sales.id = shop_sales_item.sale_id
-		where date_trunc('day', shop_sales.date) = date_trunc('day', now())
+		where shop_sales.date <= date1::DATE and shop_sales.date >= date2::DATE
 		group by shop_sales_item.product_id
 		order by count(*) desc
-		limit 3;
+		limit lim;
 END;
 $$;
 

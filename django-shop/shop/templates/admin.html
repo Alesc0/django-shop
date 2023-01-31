@@ -11,7 +11,7 @@ Admin
         <summary role="button">
             Users
         </summary>
-        <div>
+        <div class="admin-actions">
             <a role="button" href="{% url 'add_user' %}">Add Admin</a>
             <a role="button" href="{% url 'other_user' %}">Add Other</a>
         </div>
@@ -27,7 +27,7 @@ Admin
         <summary role="button">
             Produtos
         </summary>
-        <div>
+        <div class="admin-actions">
             <a role="button" href="/addProduct">Add Product</a>
         </div>
         {% for product in products %}
