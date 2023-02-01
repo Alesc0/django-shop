@@ -24,6 +24,9 @@
         <p style="font-weight:500">Quant: {{ product.stock }}</p>
         <p style="margin-left:auto" class="product-price">{{ product.price }} €</p>
       </div>
+      {% if product.sold_by != None %}
+      <ins class="soldby">Sold By {{product.sold_by}}</ins>
+    {% endif %}
       <div style="display:flex;flex-direction:row;gap:1em">
         {% with getid=product|private:'_id'%}
         <button class="addCart" style="width:fit-content" id="{{ product|private:'_id' }}" 
@@ -37,9 +40,11 @@
           {% endif %}
         </button>
         {% endwith %}
-        {% if user.is_superuser %}
-        <a role="button" href="{% url 'edit_product' product|private:'_id'%}">Edit</a>
+        {% with user=user.id|getUser %}
+        {% if user.is_superuser or product.sold_by == user.company %}
+        <a style="height:fit-content" role="button" href="{% url 'edit_product' product|private:'_id'%}">Edit</a>
         {% endif %}
+        {% endwith %}
       </div>
     </div>
   </article>

@@ -49,4 +49,6 @@ def getProduct(product):
 
 @register.filter(name='getUser')
 def getUser(user_id):
+    if user_id is None:
+        return None
     return DBHandler.get_user(user_id)

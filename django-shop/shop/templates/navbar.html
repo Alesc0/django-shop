@@ -1,6 +1,7 @@
 {% load static %}
 {% load templates %}
 
+{% with user=user.id|getUser %}
 <nav>
   <ul style="flex:1">
     <li><strong>Lojinha</strong></li>
@@ -17,7 +18,7 @@
       <a class="nav-link" href="{% url 'orders' %}">Orders</span></a>
     </li>
     {% endif %}
-    {% if request.user.is_superuser %}
+    {% if request.user.is_superuser or user.type == 3 %}
     <li>
       <a class="nav-link" href="{% url 'admin' %}">Admin</a>
     </li>
@@ -27,9 +28,7 @@
   {% if request.user.is_authenticated %}
   <li  role="list">
     <summary>
-      {% with user=user.id|getUser %}
       {{user.username}}
-      {% endwith %}
     </summary>
     <ul role="listbox">
       <li>
@@ -49,3 +48,4 @@
   </li>
   {% endif %}
 </nav>
+{% endwith %}

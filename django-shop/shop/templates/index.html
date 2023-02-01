@@ -14,6 +14,9 @@ Home {% endblock title %} {% block content %}
           <p style="font-weight:500">Quant: {{ product.stock }}</p>
           <p style="margin-left:auto" class="product-price">{{ product.price }} €</p>
         </div>
+        {% if product.sold_by != None %}
+          <ins class="soldby">Sold By {{product.sold_by}}</ins>
+        {% endif %}
       {% with getid=product|private:'_id'%}
       
       <button

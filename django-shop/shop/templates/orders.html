@@ -16,6 +16,10 @@
         {% include 'custom/inline_product.html' with product=product%}
         {% endfor %}
         <ins style="font-size:x-large;" id="totalprice"></ins>
+        {% if order.state != 'shipped' and order.state != 'canceled' %}
+        <br>
+        <a role="button" class="secondary" style="margin-top:0.5em" href="{% url 'cancel_order' order.id %}">Cancel Order</a>
+        {% endif %}
     </div>
 </details>
 {% endfor %}

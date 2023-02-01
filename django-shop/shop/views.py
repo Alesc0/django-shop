@@ -54,13 +54,22 @@ def logout(request):
 
 
 def admin(request):
+    context = {}
+    user = DBHandler.get_user(request.user.id)
+    
     if not request.user.is_authenticated:
         return redirect("/login")
-    if not request.user.is_superuser:
+    if not user['type'] in [3 , 4]:
         return redirect("/")
-    users = DBHandler.list_users(request.user.id)
-    products = DBHandler.list_products()
-    return render(request, 'admin.html', context={'users': users, 'products': products})
+    if request.user.is_superuser:
+        users = DBHandler.list_users(request.user.id)
+        context['users'] = users
+        products = DBHandler.list_products()
+        context['products'] = products
+    elif user['type'] == 3:
+        products = DBHandler.list_products(request.user.id)
+        context['products'] = products
+    return render(request, 'admin.html', context)
 
 
 def logIn(request):
@@ -164,7 +173,7 @@ def add_product(request):
             upload_name = str(uuid.uuid4())
             fss.save(upload_name + ".jpg", img)
             DBHandler.create_product(form.cleaned_data['name'], form.cleaned_data['description'],
-                                     form.cleaned_data['price'], form.cleaned_data['stock'], upload_name)
+                                     form.cleaned_data['price'], form.cleaned_data['stock'], upload_name, request.user.id)
             return redirect("/")
     form = forms.productForm()
     return render(request, "product.html", context={"form": form})
@@ -378,3 +387,7 @@ def profile(request):
     else:
         user['role'] = 'User'
     return render(request, 'profile.html', context={'user': user})
+
+def cancel_order(request, id):
+    DBHandler.cancel_order(request.user.id,id)
+    return redirect("orders")

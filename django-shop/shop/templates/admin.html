@@ -7,6 +7,7 @@ Admin
 
 {% block content %}
 <main class="container">
+    {% if users != None %}
     <details>
         <summary role="button">
             Users
@@ -21,6 +22,7 @@ Admin
         {% endfor %}
         </div>
     </details>
+    {% endif %}
     <details>
         <summary role="button">
             Produtos

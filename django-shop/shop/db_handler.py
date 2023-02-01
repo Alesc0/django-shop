@@ -80,10 +80,18 @@ def edit_user(id, username, first_name, last_name, email, _type=1,admin=False, c
 
 
 
-def create_product(name, description, price, stock,  image):
+def create_product(name, description, price, stock,  image,user_id):
+    mg_user = db.users.find_one({'_id': user_id})
     product = Product(price=price, stock=stock, promo=0)
     product.save()
-    return db.products.insert_one({"_id": product.id, 'name': name, 'description': description, 'image': image})
+    data = {}
+    data['_id'] = product.id
+    data['name'] = name
+    data['description'] = description
+    data['image'] = image
+    if mg_user['type'] == 3:
+        data['sold_by'] = mg_user['company']
+    return db.products.insert_one(data)
 
 def edit_product(id, name, description, price, stock,  image):
     product = Product.objects.get(id=id)
@@ -91,8 +99,6 @@ def edit_product(id, name, description, price, stock,  image):
     product.stock = stock
     product.save()
     return db.products.update_one({"_id": product.id}, {'$set': {'name': name, 'description': description, 'image': image}})
-    
-
 
 def get_product(product_id):
     pg = Product.objects.get(id=product_id)
@@ -101,16 +107,23 @@ def get_product(product_id):
     return product, pg
 
 
-def list_products():
-    products = []
+def list_products(user_id=None):
+    final_products = []
     pg = Product.objects.all()
-    for product in db.products.find():
+    
+    if user_id != None:
+        mg_user = db.users.find_one({'_id': user_id})
+        products = db.products.find({'sold_by': mg_user['company']})
+    else:
+        products = db.products.find()
+    
+    for product in products:
         for p in pg:
             if p.id == product["_id"]:
                 product["price"] = p.price
                 product["stock"] = p.stock
-        products.append(product)
-    return products
+        final_products.append(product)
+    return final_products
 
 def most_bought_date(date1,date2,lim):
     pg = []
@@ -209,3 +222,10 @@ def validate_sale_id(user_id, sale_id):
         return True
     except:
         return False
+
+def cancel_order(user_id, sale_id):
+    user = User.objects.get(id=user_id)
+    sale = Sales.objects.get(id=sale_id, user=user)
+    sale.state = 'canceled'
+    sale.save()
+    return sale

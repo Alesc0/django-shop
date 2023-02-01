@@ -24,6 +24,7 @@ urlpatterns = [
     path('checkout/shipping/<sale_id>', views.checkoutShipping, name='checkout_shipping'),
     path('orders', views.orders, name='orders'),
     path('profile', views.profile, name='profile'),
+    path('cancelOrder/<id>', views.cancel_order, name='cancel_order'),
     
 ]
 
