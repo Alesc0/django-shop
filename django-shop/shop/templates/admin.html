@@ -26,7 +26,7 @@ Admin
             Produtos
         </summary>
         <div class="admin-actions">
-            <a role="button" href="/add_product">Add Product</a>
+            <a role="button" href="{% url 'add_product' %}">Add Product</a>
         </div>
         {% for product in products %}
         {% include 'custom/inline_product.html' with product=product%}

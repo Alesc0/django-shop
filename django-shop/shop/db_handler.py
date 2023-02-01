@@ -78,10 +78,20 @@ def edit_user(id, username, first_name, last_name, email, _type=1,admin=False, c
         db.users.update_one({'_id': user.id}, {'$set': {'type': _type, 'company': company}})
     return user
 
+
+
 def create_product(name, description, price, stock,  image):
     product = Product(price=price, stock=stock, promo=0)
     product.save()
     return db.products.insert_one({"_id": product.id, 'name': name, 'description': description, 'image': image})
+
+def edit_product(id, name, description, price, stock,  image):
+    product = Product.objects.get(id=id)
+    product.price = price
+    product.stock = stock
+    product.save()
+    return db.products.update_one({"_id": product.id}, {'$set': {'name': name, 'description': description, 'image': image}})
+    
 
 
 def get_product(product_id):

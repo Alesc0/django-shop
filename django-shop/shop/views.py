@@ -342,11 +342,25 @@ def edit_product(request,id):
     product,_ = DBHandler.get_product(id)
     context['product'] = product
     if request.method == "POST":
-        form = forms.editProductForm(request.POST)
+        form = forms.productForm(request.POST, request.FILES)
+        img = request.FILES['image']
+        print(form.errors.as_data(),file=sys.stderr)
         if form.is_valid():
             cleaned_data = form.cleaned_data
-            DBHandler.edit_product(id, cleaned_data['name'], cleaned_data['description'], cleaned_data['price'], cleaned_data['stock'])
-            return redirect("index")
+            if img != None:    
+                fss = FileSystemStorage()
+                fss.delete(product['image'] + ".jpg")
+                upload_name = str(uuid.uuid4())
+                fss.save(upload_name + ".jpg", img)
+            data = {}
+            data['id'] = id
+            data['name'] = cleaned_data['name']
+            data['description'] = cleaned_data['description']
+            data['price'] = cleaned_data['price']
+            data['stock'] = cleaned_data['stock']
+            data['image'] = upload_name
+            DBHandler.edit_product(**data)
+            return redirect("admin")
     form = forms.productForm(initial=product)
     return render(request, "product.html", context={"form": form, "product": product})
 

@@ -36,7 +36,7 @@ END;
 $$;
 
 
-ALTER FUNCTION public.fn_most_bought_date(date1 character varying, date2 character varying, lim integer) OWNER TO postgres;
+ALTER FUNCTION public.fn_most_bought_date(date1 date, date2 date, lim integer) OWNER TO postgres;
 
 --
 -- Name: lower_username(); Type: FUNCTION; Schema: public; Owner: postgres
