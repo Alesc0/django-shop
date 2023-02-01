@@ -54,13 +54,13 @@ function updateTotalOrders() {
   $("*[id=order]").each(function () {
     let total = 0;
     $(this)
-      .children("div[class=product-order]")
+      .children("*[class=product-order]")
       .each(function () {
         total += parseFloat(
           $(this).children("p[id=product-quantity]").text() *
-            parseFloat(
-              $(this).children("p[id='product-price']").text().slice(0, -2)
-            )
+          parseFloat(
+            $(this).children("p[id='product-price']").text().slice(0, -2)
+          )
         );
       });
     $(this)
@@ -74,9 +74,9 @@ function updateTotal() {
   $("*[class=product]").each(function () {
     total += parseFloat(
       $(this).children("input[name='quantity']").val() *
-        parseFloat(
-          $(this).children("p[id='product-price']").text().slice(0, -1)
-        )
+      parseFloat(
+        $(this).children("p[id='product-price']").text().slice(0, -1)
+      )
     );
   });
   $("#totalprice").text("Total price: " + total.toFixed(2) + "€");
@@ -103,4 +103,20 @@ $("select[name='type'").change(function (e) {
     $('label[for="id_company"]').hide()
     $("#id_company").hide()
   }
+});
+
+$("*[name='auth-order']").each(function () {
+  $(this).click(function (e) {
+    e.preventDefault();
+    $.ajax({
+      url: "/authorize/" + $(this).attr("id"),
+      type: "GET",
+    }).done((response) => {
+      if (response == "success") {
+        text = $(this).closest("details").find('summary').text().replace("awaiting approval", "Authorized")
+        $(this).closest("details").find('summary').text(text)
+        $(this).remove()
+      }
+    });
+  });
 });

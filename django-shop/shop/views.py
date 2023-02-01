@@ -19,7 +19,23 @@ import random
 def search (request):
     context = {}
     context['search'] = request.GET['search']
-    context['products'],context['users'] = DBHandler.search(request.user.id,context['search'])
+    context['products'],users = DBHandler.search(request.user.id,context['search'])
+    for user in users:
+        if user['type'] == 1:
+            user['role'] = 'Comercial 1'
+        elif user['type'] == 2:
+            user['role'] = 'Comercial 2'
+        elif user['type'] == 3:
+            user['role'] = 'Partner'
+        elif user['type'] == 4:
+            user['role'] = 'Admin'
+        else:
+            user['role'] = 'User'
+        if user['is_active'] == True:
+            user['active'] = 'Active'
+        else:
+            user['active'] = 'Inactive'
+    context['users'] = users
     return render(request, "search.html", context=context)
 
 def index(request):
@@ -355,9 +371,13 @@ def product(request,id):
     while len(recomendations) > 2:
         rand = random.randint(0,len(recomendations)-1)        
         del recomendations[rand]
-        
+    
     context['most_bought_today'] = most_bought_today
     context['recomendations'] = recomendations
+    
+    if request.user.is_superuser:
+        orders = DBHandler.get_product_orders(id)
+        context['orders'] = orders
     
     context['product'] = product
     return render(request, 'product.html', context)
@@ -395,8 +415,19 @@ def edit_product(request,id):
     form = forms.productForm(initial=product)
     return render(request, "product.html", context={"form": form, "product": product})
 
-def profile(request):
-    user = DBHandler.get_user(request.user.id)
+def profile(request,id=None):
+    context = {}
+    if id == None:
+        id = request.user.id
+        
+    user = DBHandler.get_user(int(id))
+    orders = DBHandler.get_orders(int(id))
+    
+    context['orders'] = orders
+    context['user'] = user
+    
+    if user == None:
+        return redirect("index")
     user_type = user['type']
     if user_type == 1:
         user['role'] = 'Comercial 1'
@@ -408,8 +439,15 @@ def profile(request):
         user['role'] = 'Admin'
     else:
         user['role'] = 'User'
-    return render(request, 'profile.html', context={'user': user})
+        
+    return render(request, 'profile.html', context)
 
 def cancel_order(request, id):
     DBHandler.cancel_order(request.user.id,id)
     return redirect("orders")
+
+def authorize(request,id):
+    response = HttpResponse()
+    DBHandler.authorize_order(request.user.id,id)
+    response.content = "success"
+    return response

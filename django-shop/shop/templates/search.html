@@ -7,22 +7,30 @@
 </form>
 
 <div class="results">
-    <h2>Results for "{{search}}"</h2>
-    {% if products != None %}
+    {% if products|length != 0 %}
+    <article>
+        <header> Products </header>
     <div>
-        <kbd> Products </kbd>
         {% for product in products %}
         {% include 'custom/inline_product.html' with product=product %}
         {% endfor %}
     </div>
     {% endif %}
-    {% if users != None %}
+    {% if users|length != 0 %}
+    <article>
+    <header> Users </header>
     <div>
-        <kbd> Users </kbd>
+        <div class="spread" style="padding-inline: 1em">
+            <p>Name</p>
+            <p>Email</p>
+            <p>Role</p>
+            <p>Status</p>
+        </div>
         {% for user in users %}
-        {% include 'custom/inline_user.html' with user=user %}
+        {% include 'custom/inline_user.html' with user=user action='profile'%}
         {% endfor %}
     </div>
+</article>
     {% endif %}
 </div>
 {% endblock content %}

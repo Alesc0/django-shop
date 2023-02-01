@@ -1,12 +1,12 @@
-{% extends 'base.html' %} {% block title %} Profile {% endblock title %}
-{%block content %}
+{% extends 'base.html' %} {% load templates %} {% block title %} Profile {% endblock title %} 
+{% block content %}
 {% if form != None %}
 <form method="POST">
     {% csrf_token %} {{ form.as_p }}
     <button type="submit">Register</button>
 </form>
 {% else %}
-<article style="text-align:center">
+<article style="text-align:center;margin-bottom:3em">
     <header class="profile-header">{{user.first_name}} {{user.last_name}}</header>
     <div>
         <small>Email </small>
@@ -17,9 +17,38 @@
         <p>{{ user.date_joined }}</p>
         <small>Role</small>
         <p>{{ user.role }}</p>
-
         <a role="button" href="{% url 'edit_user' user.id %}">Change</a>
     </div>
 </article>
+{% with loggedUser=request.user.id|getUser %}
+{% if request.user.is_superuser or loggedUser.type == 2 or loggedUser.type == 1 %}
+<article>
+    <header>Orders</header>
+    <table>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <details id="order" style="padding:1em;margin:0;">
+                    <summary>
+                        Order #{{ order.id }} - {{ order.date|date:"d/m/Y" }} - {{ order.state }}
+                    </summary>
+                    {% for product in order.products %}
+                    {% include 'custom/inline_product.html' with product=product%}
+                    {% endfor %}
+                    <ins style="font-size:x-large;float:right" id="totalprice"></ins>
+                    <div class="admin-actions">
+                        {% if order.state == 'awaiting approval' %}
+                        <button id="{{order.id}}" name="auth-order" style="width:fit-content">Authorize</button>
+                        {% endif %}
+                        
+                    </div>
+                </details>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</article>
+{% endif %}
+{% endwith %}
 {% endif %}
 {% endblock content %}

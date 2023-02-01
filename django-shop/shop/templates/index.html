@@ -28,7 +28,7 @@ Home {% endblock title %} {% block content %}
         <button class="addCart" id="{{ product|private:'_id' }}" 
         {% if product|private:'_id'|findInCart:cart or product.stock == 0 %} disabled {% endif %}>
 
-          {%if product|private:'_id'|findInCart:cart %}
+          {% if product|private:'_id'|findInCart:cart %}
           Already in cart
           {% elif product.stock == 0 %}
           Out of stock

@@ -16,9 +16,37 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: fn_get_orders_for_product(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.fn_get_orders_for_product(_product_id integer) RETURNS TABLE(id bigint, user_id integer, first_name character varying, last_name character varying, quantity integer, price numeric, sale_date date)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+RETURN QUERY
+SELECT
+	shop_sales.id,
+	auth_user.id,
+    auth_user.first_name,
+    auth_user.last_name,
+    shop_sales_item.quantity,
+    shop_sales_item.price,
+	shop_sales.date::Date
+FROM
+    shop_sales_item
+    INNER JOIN shop_sales ON shop_sales_item.sale_id = shop_sales.id
+    INNER JOIN auth_user ON shop_sales.user_id = auth_user.id
+WHERE
+    shop_sales_item.product_id = _product_id;
+END;
+$$;
+
+
+ALTER FUNCTION public.fn_get_orders_for_product(_product_id integer) OWNER TO postgres;
 
 --
--- Name: fn_most_bought_date(character varying, character varying, integer); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: fn_most_bought_date(date, date, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION public.fn_most_bought_date(date1 date, date2 date, lim integer) RETURNS TABLE(product_id integer)
@@ -447,7 +475,8 @@ CREATE TABLE public.shop_sales (
     id bigint NOT NULL,
     date timestamp with time zone NOT NULL,
     user_id integer NOT NULL,
-    state character varying(50) NOT NULL
+    state character varying(50) NOT NULL,
+    auth_user_id integer
 );
 
 
@@ -610,9 +639,9 @@ COPY public.auth_user (id, password, last_login, is_superuser, username, first_n
 6	pbkdf2_sha256$390000$ifVG5T7EjQ0V2KAr448HkD$N8LDg8NHrv4fdyqs9gdd5qBryfC7E1kW6QAJaUp955s=	\N	f	pending	pending	pending	pending@partner.com	f	f	2023-01-30 16:55:06.413481+00
 7	pbkdf2_sha256$390000$05BKZSUEUMmSN7k6OWWUL1$RhfikI5Z4UdIdlPT8khJngEc/VrTJKLGgsJsfbXHk7o=	2023-01-30 16:55:38.037177+00	f	Alex2	Alex	AAAA	Alex@gg.com	f	t	2023-01-30 16:55:37.652576+00
 8	pbkdf2_sha256$390000$0eWv8CZT8buzzPT0ci5YSP$FdYRAeCNBMBJlnY2iYVJvm1af/QatycpYLhOewXdaRs=	\N	f	testuser	test	user	testuser@gmail.com	f	f	2023-01-31 17:13:45.436258+00
-2	pbkdf2_sha256$390000$fZszBtTuPoPozUbumReeVK$6FAJTJ8GHwT279eYbiScnZTTEpkNPiVrmEGd7o2RsZE=	2023-01-31 17:56:38.764566+00	f	User	User	Bar	user@gmail.com	f	t	2023-01-30 16:40:24.632777+00
-9	pbkdf2_sha256$390000$PRdyzvcIe3I9tONaBdAtwf$XvfOoKQbFZacUGQ+9pcWeeH5LpIV4MwRnHEMSyw8coY=	2023-01-31 18:03:38.79916+00	f	upperletter	upperletter	profile	upper@gmail.com	f	t	2023-01-31 18:03:38.482042+00
-1	pbkdf2_sha256$390000$ZjJ8bq3Vcn4xingGHeG3u1$KMkZPuD32qdOpFW+ATUfBvOB74i3Ma4jUU3MwskDtGU=	2023-01-31 18:08:04.387028+00	t	alex	Alex	Santos	Alex@gmail.com	f	t	2023-01-30 16:20:28.344752+00
+9	pbkdf2_sha256$390000$PRdyzvcIe3I9tONaBdAtwf$XvfOoKQbFZacUGQ+9pcWeeH5LpIV4MwRnHEMSyw8coY=	2023-02-01 21:24:17.079332+00	f	upperletter	upperletter	profile	upper@gmail.com	f	t	2023-01-31 18:03:38.482042+00
+2	pbkdf2_sha256$390000$fZszBtTuPoPozUbumReeVK$6FAJTJ8GHwT279eYbiScnZTTEpkNPiVrmEGd7o2RsZE=	2023-02-01 21:57:55.74602+00	f	user	User	Bar	user@gmail.com	f	t	2023-01-30 16:40:24.632777+00
+1	pbkdf2_sha256$390000$ZjJ8bq3Vcn4xingGHeG3u1$KMkZPuD32qdOpFW+ATUfBvOB74i3Ma4jUU3MwskDtGU=	2023-02-01 21:58:27.228287+00	t	alex	Alex	Santos	Alex@gmail.com	f	t	2023-01-30 16:20:28.344752+00
 \.
 
 
@@ -687,6 +716,7 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 20	shop	0002_sales_state_sales_item_promo	2023-01-30 16:19:25.283072+00
 21	shop	0003_shipping_billing	2023-01-30 16:19:25.361475+00
 22	shop	0004_alter_sales_state	2023-01-30 16:19:25.380441+00
+23	shop	0005_sales_auth_user	2023-02-01 21:37:02.038049+00
 \.
 
 
@@ -696,6 +726,7 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 
 COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
 1d89zijwejrvcnu7iflj3eg3i1p0vghd	.eJxVjMsOwiAQRf-FtSG8GVy69xvIMIBUDU1KuzL-uzbpQrf3nHNfLOK2triNssQpszOT7PS7JaRH6TvId-y3mdPc12VKfFf4QQe_zrk8L4f7d9BwtG8dwFshCaq3uihCqYSrniBZ8gaMlmCCzk6RFh4SupSrRiRyQTmRlGDvD8IkN0A:1pMv36:uQ7FLPY_dq7bW2XxI-98Odu2NRL0yvhrEywnwFXJ204	2023-02-14 18:08:04.395668+00
+c42z9qt6vqojj1c5aoezd5bbtdlp4ezm	.eJxVjMsOwiAQRf-FtSG8GVy69xvIMIBUDU1KuzL-uzbpQrf3nHNfLOK2triNssQpszOT7PS7JaRH6TvId-y3mdPc12VKfFf4QQe_zrk8L4f7d9BwtG8dwFshCaq3uihCqYSrniBZ8gaMlmCCzk6RFh4SupSrRiRyQTmRlGDvD8IkN0A:1pNL7b:aNiJhyghep58GMKkkQcHQhkOEtoOiGp53jo3XQ-tN3o	2023-02-15 21:58:27.231109+00
 \.
 
 
@@ -707,6 +738,7 @@ COPY public.shop_billing (id, nif, address, city, zip, country, sale_id) FROM st
 1	123123123	Address	Viseu	3213-123	Portugal	1
 2	324123123	Urbanização Vilabeira, Bloco 7 RC /E	Biseu	3213-123	Portugal	3
 3	312123123	123	Biseu	3213-123	Portugalou	4
+4	123123123	123123123	123	123	123	5
 \.
 
 
@@ -718,8 +750,6 @@ COPY public.shop_cart_item (id, quantity, product_id, user_id) FROM stdin;
 10	1	7	1
 9	4	5	1
 11	3	8	1
-12	1	1	2
-13	1	5	2
 \.
 
 
@@ -729,13 +759,13 @@ COPY public.shop_cart_item (id, quantity, product_id, user_id) FROM stdin;
 
 COPY public.shop_product (id, price, promo, stock) FROM stdin;
 2	10.00	0	28
-1	23.00	0	10
 3	12.00	0	0
 7	4.00	0	40
 6	200.00	0	0
-5	5.00	0	14
 4	3.00	0	21
-8	20.00	0	8
+1	23.00	0	8
+5	5.00	0	12
+8	20.00	0	6
 \.
 
 
@@ -743,10 +773,11 @@ COPY public.shop_product (id, price, promo, stock) FROM stdin;
 -- Data for Name: shop_sales; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.shop_sales (id, date, user_id, state) FROM stdin;
-1	2023-01-30 17:15:41.375989+00	1	awaiting approval
-3	2023-01-20 11:19:16.548122+00	1	awaiting approval
-4	2023-01-31 11:22:14.187144+00	1	awaiting approval
+COPY public.shop_sales (id, date, user_id, state, auth_user_id) FROM stdin;
+1	2023-01-30 17:15:41.375989+00	1	awaiting approval	\N
+3	2023-01-20 11:19:16.548122+00	1	awaiting approval	\N
+4	2023-01-31 11:22:14.187144+00	1	Authorized	1
+5	2023-02-01 21:58:19.660529+00	2	Authorized	1
 \.
 
 
@@ -762,6 +793,9 @@ COPY public.shop_sales_item (id, price, quantity, product_id, sale_id, promo) FR
 7	5.00	3	5	3	0
 8	3.00	1	4	4	0
 9	20.00	1	8	4	0
+10	23.00	1	1	5	0
+11	5.00	1	5	5	0
+12	20.00	1	8	5	0
 \.
 
 
@@ -773,6 +807,7 @@ COPY public.shop_shipping (id, address, city, zip, country, sale_id) FROM stdin;
 1	Address	Viseu	3213-123	Portugal	1
 2	Urbanização Vilabeira, Bloco 7 RC /E	Biseu	3213-123	Portugal	3
 3	123	Biseu	3213-123	Portugalou	4
+4	123123123	123	123	123	5
 \.
 
 
@@ -836,21 +871,21 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 12, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 22, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 23, true);
 
 
 --
 -- Name: shop_billing_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shop_billing_id_seq', 3, true);
+SELECT pg_catalog.setval('public.shop_billing_id_seq', 4, true);
 
 
 --
 -- Name: shop_cart_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shop_cart_item_id_seq', 13, true);
+SELECT pg_catalog.setval('public.shop_cart_item_id_seq', 16, true);
 
 
 --
@@ -864,21 +899,21 @@ SELECT pg_catalog.setval('public.shop_product_id_seq', 8, true);
 -- Name: shop_sales_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shop_sales_id_seq', 4, true);
+SELECT pg_catalog.setval('public.shop_sales_id_seq', 5, true);
 
 
 --
 -- Name: shop_sales_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shop_sales_item_id_seq', 9, true);
+SELECT pg_catalog.setval('public.shop_sales_item_id_seq', 12, true);
 
 
 --
 -- Name: shop_shipping_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.shop_shipping_id_seq', 3, true);
+SELECT pg_catalog.setval('public.shop_shipping_id_seq', 4, true);
 
 
 --
@@ -1178,6 +1213,13 @@ CREATE INDEX shop_cart_item_user_id_069dfd9c ON public.shop_cart_item USING btre
 
 
 --
+-- Name: shop_sales_auth_user_id_f8f729db; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX shop_sales_auth_user_id_f8f729db ON public.shop_sales USING btree (auth_user_id);
+
+
+--
 -- Name: shop_sales_item_product_id_56528f3b; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -1316,6 +1358,14 @@ ALTER TABLE ONLY public.shop_cart_item
 
 
 --
+-- Name: shop_sales shop_sales_auth_user_id_f8f729db_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.shop_sales
+    ADD CONSTRAINT shop_sales_auth_user_id_f8f729db_fk_auth_user_id FOREIGN KEY (auth_user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
 -- Name: shop_sales_item shop_sales_item_product_id_56528f3b_fk_shop_product_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1350,3 +1400,4 @@ ALTER TABLE ONLY public.shop_shipping
 --
 -- PostgreSQL database dump complete
 --
+

@@ -125,3 +125,9 @@ article > header {
 .searchbar > * {
   width: fit-content;
 }
+
+.spread{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

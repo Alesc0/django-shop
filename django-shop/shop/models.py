@@ -14,6 +14,7 @@ class Sales (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateTimeField()
     state = models.CharField(max_length=50)
+    auth_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='auth_user')
 
 class Billing(models.Model):
     sale = models.ForeignKey(Sales, on_delete=models.CASCADE)

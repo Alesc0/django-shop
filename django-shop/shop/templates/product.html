@@ -12,7 +12,7 @@
   </button>
 </form>
 {% else %}
-<div style="display:flex;flex-direction:row;gap:5em">
+<div style="display:flex;flex-direction:row;gap:5em;margin-bottom:2em">
   <article style="width:70%;margin:0 auto;padding:3em">
     <header>
       <img class="product-img" src="{% get_media_prefix %}/{{product.image}}.jpg" alt="{{ product.name }}">
@@ -28,10 +28,11 @@
       <ins class="soldby">Sold By {{product.sold_by}}</ins>
     {% endif %}
       <div style="display:flex;flex-direction:row;gap:1em">
-        {% with getid=product|private:'_id'%}
         <button class="addCart" style="width:fit-content" id="{{ product|private:'_id' }}" 
-        {% if product|private:'_id'|findInCart:cart or product.stock == 0 %} disabled {% endif %}>
-          {%if product|private:'_id'|findInCart:cart %}
+        {% if product|private:'_id'|findInCart:cart %} disabled {% endif %}
+        {% if product.stock == 0 %} disabled {% endif %}
+        >
+          {% if product|private:'_id'|findInCart:cart %}
           Already in cart
           {% elif product.stock == 0 %}
           Out of stock
@@ -39,7 +40,6 @@
           Add To Cart
           {% endif %}
         </button>
-        {% endwith %}
         {% with user=user.id|getUser %}
         {% if user.is_superuser or product.sold_by == user.company %}
         <a style="height:fit-content" role="button" href="{% url 'edit_product' product|private:'_id'%}">Edit</a>
@@ -50,5 +50,32 @@
   </article>
   {% include 'custom/sideproducts.html' %}
 </div>
+  {% if orders != None %}
+  <article>
+    <header>Orders</header>
+    <div>
+      <table>
+        <tr>
+          <th>Order ID</th>
+          <th>Buyer</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Date</th>
+        </tr>
+        <tbody>
+        {% for order in orders %}
+        <tr>
+          <td>{{order.id}}</td>
+          <td><a href="{%url 'profile' order.user_id %}">{{order.buyer}}</a></td>
+          <td>{{order.quantity}}</td>
+          <td>{{order.price}} €</td>
+          <td>{{order.date}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      </table>
+    </div>
+  </article>
+  {% endif %}
 {% endif %}
 {% endblock content %}

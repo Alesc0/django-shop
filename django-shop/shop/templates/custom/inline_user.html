@@ -3,7 +3,14 @@
 
 <div class="inline-usr {% if user.is_superuser %}  admin-background {% endif %}">
     <p style="font-weight:bold;font-weight:20px">
-        <a href="{% url 'edit_user' user.id %}">{{user.first_name}} {{user.last_name}}</a>
+        <a 
+        {% if action == "profile" %}
+        href="{% url 'profile' user.id %}"
+        {% else %}
+        href="{% url 'edit_user' user.id %}"
+        {% endif %}
+        >{{user.first_name}} {{user.last_name}}
+    </a>
     </p>
     <p>{{user.email}}</p>
     <p>{{user.role}}</p>

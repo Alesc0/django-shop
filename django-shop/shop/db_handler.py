@@ -22,7 +22,8 @@ db = client.dbproj
 def get_user(user_id):
     user = User.objects.get(id=user_id)
     mg = db.users.find_one({'_id': user_id})
-    mg.update(user.__dict__)
+    if mg != None:
+        mg.update(user.__dict__)
     return mg
 
 def list_users(user_id,filter=None):
@@ -172,6 +173,31 @@ def get_products_in_promo():
             res.append(db.products.find_one({"_id": item[0]}))
     return res
 
+def get_product_orders(product_id):
+    pg = []
+    res = []
+    c = connection.cursor()
+    
+    try:
+        c.execute("BEGIN")
+        c.callproc("fn_get_orders_for_product", (product_id,))
+        pg = c.fetchall()
+        c.execute("COMMIT")
+    finally:
+        c.close()
+        
+    for item in pg:
+        i = {}
+        i['id'] = item[0]
+        i['user_id'] = item[1]
+        i['buyer'] = item[2] + ' ' + item[3]
+        i['quantity'] = item[4]
+        i['price'] = item[5]
+        i['date'] = item[6]
+        res.append(i)
+        
+    return res
+
 def create_order(user_id, cart):
     user = User.objects.get(id=user_id)
     sale = Sales(user=user,
@@ -188,6 +214,13 @@ def create_order(user_id, cart):
         sales_item.save()
     return sale
 
+def authorize_order (user_id,id):
+    auth_user = User.objects.get(id=user_id)
+    sale = Sales.objects.get(id=id)
+    sale.state = 'Authorized'
+    sale.auth_user = auth_user
+    sale.save()
+    return sale
 
 def link_billing(sale_id, nif, address, city, zip, country):
     sale = Sales.objects.get(id=sale_id)
