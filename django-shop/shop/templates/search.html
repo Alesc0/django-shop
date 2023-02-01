@@ -1,0 +1,28 @@
+{% extends 'base.html' %} {% block title %} Search {% endblock title %}
+{%block content %}
+
+<form method="GET" class="searchbar">
+    <input type="text" name="search" placeholder="Search" value="{{search}}">
+    <button type="submit">Search</button>
+</form>
+
+<div class="results">
+    <h2>Results for "{{search}}"</h2>
+    {% if products != None %}
+    <div>
+        <kbd> Products </kbd>
+        {% for product in products %}
+        {% include 'custom/inline_product.html' with product=product %}
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% if users != None %}
+    <div>
+        <kbd> Users </kbd>
+        {% for user in users %}
+        {% include 'custom/inline_user.html' with user=user %}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}

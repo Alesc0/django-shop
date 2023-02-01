@@ -25,11 +25,16 @@ def get_user(user_id):
     mg.update(user.__dict__)
     return mg
 
-def list_users(user_id):
+def list_users(user_id,filter=None):
     # pagination https://www.mongodb.com/docs/manual/reference/method/cursor.skip/
     users = []
-    pg = User.objects.all()
-    for mg_user in db.users.find():
+    if filter != None:
+        pg = User.objects.filter(first_name__icontains = filter) | User.objects.filter(last_name__icontains = filter) | User.objects.filter(email__icontains = filter)
+    else :
+        pg = User.objects.all()
+        
+    mg = db.users.find()
+    for mg_user in mg:
         for pg_user in pg:
             if pg_user.id == mg_user['_id'] and mg_user['_id'] != user_id:
                 users.append({**mg_user, **pg_user.__dict__})
@@ -58,19 +63,20 @@ def create_user(username, password, first_name, last_name, email, _type=1,admin=
             {'_id': user.id, 'type': _type, 'company': company})
     return user
 
-def edit_user(id, username, first_name, last_name, email, _type=1,admin=False, company=None,is_active=True,password=None):
+def edit_user(id, username, first_name, last_name, email, _type=1,admin=False, company=None,is_active=True,reset_password=None):
     try:
         user = User.objects.get(id=id)
-        user.username=username,
-        user.email=email,
-        user.first_name=first_name,
-        user.last_name=last_name,
-        user.is_superuser=admin,
+        user.username=username
+        user.email=email
+        user.first_name=first_name
+        user.last_name=last_name
+        user.is_superuser=admin
         user.is_active=is_active
-        if (password != None):
-            user.set_password(password)
+        if reset_password != None:
+            user.set_password(reset_password)
         user.save()
-    except:
+    except Exception as e:
+        print(e, file=sys.stderr)
         return None
     if _type != 3:
         db.users.update_one({'_id': user.id}, {'$set': {'type': _type}})
@@ -98,7 +104,13 @@ def edit_product(id, name, description, price, stock,  image):
     product.price = price
     product.stock = stock
     product.save()
-    return db.products.update_one({"_id": product.id}, {'$set': {'name': name, 'description': description, 'image': image}})
+    data = {}
+    data['_id'] = product.id
+    data['name'] = name
+    data['description'] = description
+    if image != None:
+        data['image'] = image
+    return db.products.update_one({"_id": product.id}, {'$set': data})
 
 def get_product(product_id):
     pg = Product.objects.get(id=product_id)
@@ -107,7 +119,7 @@ def get_product(product_id):
     return product, pg
 
 
-def list_products(user_id=None):
+def list_products(user_id=None,filter=None):
     final_products = []
     pg = Product.objects.all()
     
@@ -115,7 +127,10 @@ def list_products(user_id=None):
         mg_user = db.users.find_one({'_id': user_id})
         products = db.products.find({'sold_by': mg_user['company']})
     else:
-        products = db.products.find()
+        if filter != None:
+            products = db.products.find({"name": {"$regex": filter, "$options": "i"}})
+        else:
+            products = db.products.find()
     
     for product in products:
         for p in pg:
@@ -229,3 +244,9 @@ def cancel_order(user_id, sale_id):
     sale.state = 'canceled'
     sale.save()
     return sale
+
+def search(user_id,search):
+    products = list_products(filter=search)
+    users = list_users(user_id,filter=search)
+    return products, users
+    

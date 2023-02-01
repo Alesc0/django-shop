@@ -93,6 +93,7 @@ article > header {
   border-radius: 5em;
   padding-inline: 0.5em;
   margin-bottom: 1em;
+  justify-content: space-between;
 }
 
 .inline-usr > * {
@@ -111,4 +112,16 @@ article > header {
 .soldby {
   font-size: 18px;
   font-weight: bold;
+}
+
+.searchbar {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+  width: 15em;
+  margin: 0 auto;
+}
+
+.searchbar > * {
+  width: fit-content;
 }

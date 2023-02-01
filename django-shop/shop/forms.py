@@ -35,13 +35,25 @@ class admin_user_form(forms.Form):
     company = forms.CharField(required=False)
     is_active = forms.BooleanField(required=False)
 
+class admin_edit_user_form(forms.Form):
+    username = forms.CharField()
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    email = forms.EmailField()
+    reset_password = forms.CharField(required=False,widget=forms.PasswordInput)
+    widget=forms.Select(choices=((1,'Comercial 1'),(2,'Comercial 2'),(3,'Partner'),(4,'Admin'),(5,'User')))
+    type = forms.IntegerField(widget=widget)
+    company = forms.CharField(required=False)
+    is_active = forms.BooleanField(required=False)
+
+
 class productForm(forms.Form):
     name = forms.CharField()
     description = forms.CharField(widget=forms.Textarea)
     stock = forms.IntegerField(min_value=0)
     price = forms.IntegerField(min_value=0)
-    image = forms.ImageField()
-    
+    image = forms.ImageField(required=False)
+
 class checkoutBillingForm(forms.Form):
     nif = forms.CharField()
     address = forms.CharField(max_length=100)

@@ -1350,4 +1350,3 @@ ALTER TABLE ONLY public.shop_shipping
 --
 -- PostgreSQL database dump complete
 --
-

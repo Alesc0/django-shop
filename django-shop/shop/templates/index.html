@@ -1,5 +1,11 @@
 {% extends 'base.html' %} {% load templates %} {% load static %} {% block title %}
 Home {% endblock title %} {% block content %}
+
+<form method="GET" class="searchbar" action="{% url 'search' %}" >
+  <input type="text" name="search" placeholder="Search">
+  <button type="submit">Search</button>
+</form>
+
 <div style="display:flex;flex-direction:row;gap:5em">
   <div class="grid-custom">
     {% for product in products %}
@@ -15,24 +21,23 @@ Home {% endblock title %} {% block content %}
           <p style="margin-left:auto" class="product-price">{{ product.price }} €</p>
         </div>
         {% if product.sold_by != None %}
-          <ins class="soldby">Sold By {{product.sold_by}}</ins>
+        <ins class="soldby">Sold By {{product.sold_by}}</ins>
         {% endif %}
-      {% with getid=product|private:'_id'%}
-      
-      <button
-        class="addCart" id="{{ product|private:'_id' }}"
-         {% if product|private:'_id'|findInCart:cart or product.stock == 0 %} disabled {% endif %}>
-        
-        {%if product|private:'_id'|findInCart:cart %}
-        Already in cart
-        {% elif product.stock == 0 %}
-        Out of stock
-        {% else %}
-        Add To Cart
-        {% endif %}
-      </button>
-      {% endwith %}
-    </div>
+        {% with getid=product|private:'_id'%}
+
+        <button class="addCart" id="{{ product|private:'_id' }}" 
+        {% if product|private:'_id'|findInCart:cart or product.stock == 0 %} disabled {% endif %}>
+
+          {%if product|private:'_id'|findInCart:cart %}
+          Already in cart
+          {% elif product.stock == 0 %}
+          Out of stock
+          {% else %}
+          Add To Cart
+          {% endif %}
+        </button>
+        {% endwith %}
+      </div>
 
     </article>
     {% endfor %}

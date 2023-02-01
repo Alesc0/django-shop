@@ -16,6 +16,12 @@ import datetime
 import random
 
 
+def search (request):
+    context = {}
+    context['search'] = request.GET['search']
+    context['products'],context['users'] = DBHandler.search(request.user.id,context['search'])
+    return render(request, "search.html", context=context)
+
 def index(request):
     context = {}
     products = DBHandler.list_products()
@@ -63,6 +69,21 @@ def admin(request):
         return redirect("/")
     if request.user.is_superuser:
         users = DBHandler.list_users(request.user.id)
+        for user in users:
+            if user['type'] == 1:
+                user['role'] = 'Comercial 1'
+            elif user['type'] == 2:
+                user['role'] = 'Comercial 2'
+            elif user['type'] == 3:
+                user['role'] = 'Partner'
+            elif user['type'] == 4:
+                user['role'] = 'Admin'
+            else:
+                user['role'] = 'User'
+            if user['is_active'] == True:
+                user['active'] = 'Active'
+            else:
+                user['active'] = 'Inactive'
         context['users'] = users
         products = DBHandler.list_products()
         context['products'] = products
@@ -194,37 +215,32 @@ def add_user(request):
 
 def edit_user(request,id):
     if request.method == "POST":
-        form = forms.admin_user_form(request.POST)
+        form = forms.admin_edit_user_form(request.POST)
         if form.is_valid():
-            
-            if (form.cleaned_data['password1'] != form.cleaned_data['password2']):
-                form.add_error('password1', 'Passwords do not match.')
-                return render(request, "register.html", context={"form": form})
-            
             cleanedForm = form.cleaned_data
             
             data = {}
             data['username'] = cleanedForm['username']
-            data['password'] = cleanedForm['password1']
             data['first_name'] = cleanedForm['first_name']
             data['last_name'] = cleanedForm['last_name']
             data['email'] = cleanedForm['email']
             data['is_active'] = cleanedForm['is_active'] or False
             data['_type'] = cleanedForm['type']
+            data['reset_password'] = cleanedForm['reset_password']
             
             if (cleanedForm['type'] == 4):
                 data['admin'] = True
             if (cleanedForm['type'] == 3):
                 data['company'] = cleanedForm['company']
             
-            DBHandler.edit_user(id, **data)
+            user = DBHandler.edit_user(id, **data)
     
-            if (user is None):
+            if user == None:
                 form.add_error('username', 'Username already exists.')
                 return render(request, "register.html", context={"form": form})
             return redirect("admin")
     user = DBHandler.get_user(int(id))
-    form = forms.admin_user_form(initial=user) if request.user.is_superuser else forms.registerForm(initial=user)
+    form = forms.admin_edit_user_form(initial=user) if request.user.is_superuser else forms.registerForm(initial=user)
     return render(request, "user.html", context={"form": form})
 
 def cart(request):
@@ -349,25 +365,31 @@ def product(request,id):
 def edit_product(request,id):
     context = {}
     product,_ = DBHandler.get_product(id)
+    try :
+        img = request.FILES['image']
+    except:
+        img = None
     context['product'] = product
     if request.method == "POST":
         form = forms.productForm(request.POST, request.FILES)
-        img = request.FILES['image']
-        print(form.errors.as_data(),file=sys.stderr)
         if form.is_valid():
+            data = {}
             cleaned_data = form.cleaned_data
             if img != None:    
                 fss = FileSystemStorage()
                 fss.delete(product['image'] + ".jpg")
                 upload_name = str(uuid.uuid4())
                 fss.save(upload_name + ".jpg", img)
-            data = {}
+                data['image'] = upload_name
+            else :
+                data['image'] = None
+                
             data['id'] = id
             data['name'] = cleaned_data['name']
             data['description'] = cleaned_data['description']
             data['price'] = cleaned_data['price']
             data['stock'] = cleaned_data['stock']
-            data['image'] = upload_name
+            
             DBHandler.edit_product(**data)
             return redirect("admin")
     form = forms.productForm(initial=product)
