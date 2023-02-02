@@ -28,6 +28,7 @@ urlpatterns = [
     path('profile/<id>', views.profile, name='profile'),
     path('cancelOrder/<id>', views.cancel_order, name='cancel_order'),
     path('authorize/<id>', views.authorize, name='authorize'),
+    path('export', views.export, name='export_products'),
     
 ]
 

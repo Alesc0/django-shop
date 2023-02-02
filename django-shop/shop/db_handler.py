@@ -9,6 +9,7 @@ from shop.models import Product, Sales, Sales_Item, Billing, Shipping
 from django.utils import timezone
 import shop.cart as cartUtils
 from django.db import connection
+from json import dumps
 
 env = environ.Env()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -17,7 +18,6 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 client = MongoClient(env('MONGO_STRING'))
 db = client.dbproj
-
 
 def get_user(user_id):
     user = User.objects.get(id=user_id)
@@ -54,8 +54,7 @@ def create_user(username, password, first_name, last_name, email, _type=1,admin=
             is_active=is_active
         )
         user.save()
-    except Exception as e:
-        print(e, file=sys.stderr)
+    except:
         return None
     if _type != 3:
         db.users.insert_one({'_id': user.id, 'type': _type})
@@ -76,8 +75,7 @@ def edit_user(id, username, first_name, last_name, email, _type=1,admin=False, c
         if reset_password != None:
             user.set_password(reset_password)
         user.save()
-    except Exception as e:
-        print(e, file=sys.stderr)
+    except:
         return None
     if _type != 3:
         db.users.update_one({'_id': user.id}, {'$set': {'type': _type}})
@@ -282,4 +280,37 @@ def search(user_id,search):
     products = list_products(filter=search)
     users = list_users(user_id,filter=search)
     return products, users
+
+
+def get_authorized(id):
+    pg = []
+    res = []
+    c = connection.cursor()
     
+    try:
+        c.execute("BEGIN")
+        c.callproc("fn_get_authorized_for_user", (id,))
+        pg = c.fetchall()
+        c.execute("COMMIT")
+    finally:
+        c.close()
+        
+    for item in pg:
+        i = {}
+        i['id'] = item[0]
+        i['user_id'] = item[1]
+        i['buyer'] = item[2] + ' ' + item[3]
+        i['date'] = item[4]
+        res.append(i)
+
+    
+    for sale in res:
+        _sale = Sales.objects.get(id=sale['id'])
+        sale['products'] = []
+        for item in Sales_Item.objects.filter(sale=_sale):
+            product = db.products.find_one({'_id': item.product.id})
+            product.update(item.product.__dict__)
+            product.update(item.__dict__)
+            sale['products'].append(product)
+    
+    return res

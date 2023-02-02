@@ -20,7 +20,7 @@ SET row_security = off;
 -- Name: fn_get_orders_for_product(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.fn_get_orders_for_product(_product_id integer) RETURNS TABLE(id bigint, user_id integer, first_name character varying, last_name character varying, quantity integer, price numeric, sale_date date)
+CREATE FUNCTION public.fn_get_orders_for_product(_product_id integer) RETURNS TABLE(id bigint, user_id integer, first_name varchar, last_name varchar, quantity integer, price numeric, sale_date date)
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -65,6 +65,35 @@ $$;
 
 
 ALTER FUNCTION public.fn_most_bought_date(date1 date, date2 date, lim integer) OWNER TO postgres;
+
+
+--
+-- Name: fn_get_authorized_for_user(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.fn_get_authorized_for_user(_user_id integer) 
+RETURNS TABLE(id bigint,user_id integer, first_name varchar, last_name varchar, sale_date date)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+RETURN QUERY
+SELECT
+    shop_sales.id,
+    auth_user.id,
+    auth_user.first_name,
+    auth_user.last_name,
+    shop_sales.date::Date
+FROM
+    shop_sales
+    INNER JOIN auth_user ON shop_sales.auth_user_id = auth_user.id
+WHERE
+    shop_sales.auth_user_id = _user_id and shop_sales.state = 'Authorized';
+END;
+$$;
+
+
+ALTER FUNCTION public.fn_get_authorized_for_user(_user_id integer)  OWNER TO postgres;
+
 
 --
 -- Name: lower_username(); Type: FUNCTION; Schema: public; Owner: postgres
@@ -1400,4 +1429,3 @@ ALTER TABLE ONLY public.shop_shipping
 --
 -- PostgreSQL database dump complete
 --
-

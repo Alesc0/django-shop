@@ -10,10 +10,10 @@
 >
     <img class="product-cart-img" src="{% get_media_prefix %}/{{product.image}}.jpg"
         alt="{{ product.name }}" />
-    <p style="font-weight:bold;font-weight:20px">
+    <p style="font-weight:bold;font-weight:20px;flex:1">
         <a href="{% url 'product' product|private:'_id'%}" >{{ product.name }}</a>
     </p>
-    <p>{{ product.description|limitChars:100 }}</p>
+    <p style="flex:3">{{ product.description|limitChars:100 }}</p>
     {% if product.quantity %}
     <p id="product-quantity">{{product.quantity}}</p>
     <p> x </p>

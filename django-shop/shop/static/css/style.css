@@ -98,6 +98,7 @@ article > header {
 
 .inline-usr > * {
   margin: 0.2em;
+  flex: 1;
 }
 .admin-background {
   background-color: rgba(255, 247, 0, 0.761);
@@ -126,7 +127,7 @@ article > header {
   width: fit-content;
 }
 
-.spread{
+.spread {
   display: flex;
   flex-direction: row;
   justify-content: space-between;

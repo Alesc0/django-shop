@@ -22,7 +22,7 @@
 </article>
 {% with loggedUser=request.user.id|getUser %}
 {% if request.user.is_superuser or loggedUser.type == 2 or loggedUser.type == 1 %}
-<article>
+<article style="margin-bottom: 2em">
     <header>Orders</header>
     <table>
         <tbody>
@@ -48,6 +48,30 @@
         </tbody>
     </table>
 </article>
+    {% if loggedUser.type == 2 or loggedUser.type == 4 %}
+        {% if authorized|length > 0 %}
+        <article>
+            <header>Authorized Orders</header>
+            <table>
+                <tbody>
+                    {% for order in authorized %}
+                    <tr>
+                        <details id="order" style="padding:1em;margin:0;">
+                            <summary>
+                                Order #{{ order.id }} - {{ order.date|date:"d/m/Y" }} - Authorized
+                            </summary>
+                            {% for product in order.products %}
+                            {% include 'custom/inline_product.html' with product=product%}
+                            {% endfor %}
+                            <ins style="font-size:x-large;float:right" id="totalprice"></ins>
+                        </details>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </article>
+        {% endif %}
+{% endif %}
 {% endif %}
 {% endwith %}
 {% endif %}
