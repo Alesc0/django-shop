@@ -7,7 +7,9 @@
 
 All the instructions are in the `Dockerfile` and `docker-compose.yml` files. The only step required is to run the docker compose file.
 
-
+## Pre-added admin user
+- username: alex
+- password: 123
 ## Features
 - User registration and login
 - User profile

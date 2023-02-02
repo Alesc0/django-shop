@@ -427,6 +427,7 @@ def profile(request,id=None):
     
     if id != None:
         context['authorized'] = DBHandler.get_authorized(id)
+        context['products'] = DBHandler.list_products(int(id))
     
     user = DBHandler.get_user(int(id))
     orders = DBHandler.get_orders(int(id))
@@ -458,15 +459,4 @@ def authorize(request,id):
     response = HttpResponse()
     DBHandler.authorize_order(request.user.id,id)
     response.content = "success"
-    return response
-
-def export(request):
-    id = None if request.user.is_superuser else request.user.id
-    
-    #text = DBHandler.export(id)
-    myfile = StringIO.StringIO()
-    myfile.write("text")
-    
-    response = HttpResponse(FileWrapper(myfile), content_type='application/zip')
-    response['Content-Disposition'] = 'attachment; filename=export.zip'
     return response
