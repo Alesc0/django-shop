@@ -662,9 +662,9 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-3	pbkdf2_sha256$390000$7tClxu9XwzFKXnu26cC9MO$NNx4iTvqFk0Wd3Ma1LATd/SHs/qChUMs37HsCkNMYIA=	\N	f	Partner 1	Partner	Inou	Partnet@gmail.com	f	t	2023-01-30 16:40:55.020138+00
-4	pbkdf2_sha256$390000$Ue9WIcWcR1GGoROO9uzwPU$L/kVKD7+Cphg3MKdRhmUZ9M0Zu7RQ2fgxWvfL0OEMn4=	\N	f	Inactive	In	Active	inactive@gmail.com	f	f	2023-01-30 16:41:59.91079+00
-5	pbkdf2_sha256$390000$5SewEElyX0tfjzyz7EVlhZ$lqE3jOO/aCEW/EVsgEQXZn37I0rHH9CI1YG6zyJY0FY=	\N	f	Comercial 1	Comercial	Comercial	Comercial@lojinha.com	f	t	2023-01-30 16:54:01.974274+00
+3	pbkdf2_sha256$390000$7tClxu9XwzFKXnu26cC9MO$NNx4iTvqFk0Wd3Ma1LATd/SHs/qChUMs37HsCkNMYIA=	\N	f	partner1	Partner	Inou	Partnet@gmail.com	f	t	2023-01-30 16:40:55.020138+00
+4	pbkdf2_sha256$390000$Ue9WIcWcR1GGoROO9uzwPU$L/kVKD7+Cphg3MKdRhmUZ9M0Zu7RQ2fgxWvfL0OEMn4=	\N	f	inactive	In	Active	inactive@gmail.com	f	f	2023-01-30 16:41:59.91079+00
+5	pbkdf2_sha256$390000$5SewEElyX0tfjzyz7EVlhZ$lqE3jOO/aCEW/EVsgEQXZn37I0rHH9CI1YG6zyJY0FY=	\N	f	comercial1	Comercial	Comercial	Comercial@lojinha.com	f	t	2023-01-30 16:54:01.974274+00
 6	pbkdf2_sha256$390000$ifVG5T7EjQ0V2KAr448HkD$N8LDg8NHrv4fdyqs9gdd5qBryfC7E1kW6QAJaUp955s=	\N	f	pending	pending	pending	pending@partner.com	f	f	2023-01-30 16:55:06.413481+00
 7	pbkdf2_sha256$390000$05BKZSUEUMmSN7k6OWWUL1$RhfikI5Z4UdIdlPT8khJngEc/VrTJKLGgsJsfbXHk7o=	2023-01-30 16:55:38.037177+00	f	Alex2	Alex	AAAA	Alex@gg.com	f	t	2023-01-30 16:55:37.652576+00
 8	pbkdf2_sha256$390000$0eWv8CZT8buzzPT0ci5YSP$FdYRAeCNBMBJlnY2iYVJvm1af/QatycpYLhOewXdaRs=	\N	f	testuser	test	user	testuser@gmail.com	f	f	2023-01-31 17:13:45.436258+00

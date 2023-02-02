@@ -6,17 +6,22 @@
     gap:1em;
     padding-inline:0.5em;
     margin-bottom:1em;
-    align-items:center"
->
-    <img class="product-cart-img" src="{% get_media_prefix %}/{{product.image}}.jpg"
-        alt="{{ product.name }}" />
+    align-items:center">
+    <img class="product-cart-img" src="{% get_media_prefix %}/{{product.image}}.jpg" alt="{{ product.name }}" />
     <p style="font-weight:bold;font-weight:20px;flex:1">
-        <a href="{% url 'product' product|private:'_id'%}" >{{ product.name }}</a>
+        <a href="{% url 'product' product|private:'_id'%}">{{ product.name }}</a>
     </p>
     <p style="flex:3">{{ product.description|limitChars:100 }}</p>
     {% if product.quantity %}
     <p id="product-quantity">{{product.quantity}}</p>
     <p> x </p>
     {% endif %}
-    <p id="product-price" style="font-weight:bold;font-size:22px">{{ product.price }}&nbsp€</p>
+    {% if product.promo != 0 %}
+    <div class="promo">
+        <s style="margin-left:auto" class="product-price">{{ product.price }} €</s>
+        <ins id="product-price" style="margin-left:auto" class="product-price">{{ product|getPromo }} €</ins>
+    </div>
+    {% else %}
+    <p id="product-price" style="margin-left:auto" class="product-price">{{ product.price }} €</p>
+    {% endif %}
 </div>

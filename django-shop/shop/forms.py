@@ -51,6 +51,7 @@ class productForm(forms.Form):
     name = forms.CharField()
     description = forms.CharField(widget=forms.Textarea)
     stock = forms.IntegerField(min_value=0)
+    promo = forms.IntegerField(min_value=0,max_value=100)
     price = forms.IntegerField(min_value=0)
     image = forms.ImageField(required=False)
 

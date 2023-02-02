@@ -18,7 +18,14 @@ Home {% endblock title %} {% block content %}
         <p class="product-body">{{ product.description|limitChars:100 }}</p>
         <div style="display:flex;flex-direction:row;align-items:center;margin-top:1em">
           <p style="font-weight:500">Quant: {{ product.stock }}</p>
+          {% if product.promo != 0 %}
+          <div class="promo">
+            <s class="product-price-before">{{ product.price }} €</s> 
+            <ins class="product-price">-{{product.promo}}% {{ product|getPromo }} €</ins>
+        </div>
+          {% else %}
           <p style="margin-left:auto" class="product-price">{{ product.price }} €</p>
+          {% endif %}
         </div>
         {% if product.sold_by != None %}
         <ins class="soldby">Sold By {{product.sold_by}}</ins>

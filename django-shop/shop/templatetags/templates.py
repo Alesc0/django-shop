@@ -3,6 +3,7 @@ from django import template
 from shop.models import Cart_Item
 
 import shop.db_handler as DBHandler
+from decimal import *
 
 
 register = template.Library()
@@ -52,3 +53,8 @@ def getUser(user_id):
     if user_id is None:
         return None
     return DBHandler.get_user(user_id)
+
+@register.filter(name='getPromo')
+def getPromo(product):
+    res = product['price'] * round(Decimal(product['promo'] / 100), 2)
+    return f'{res:.2f}'

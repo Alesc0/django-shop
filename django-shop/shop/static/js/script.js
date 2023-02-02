@@ -59,7 +59,7 @@ function updateTotalOrders() {
         total += parseFloat(
           $(this).children("p[id=product-quantity]").text() *
           parseFloat(
-            $(this).children("p[id='product-price']").text().slice(0, -2)
+            $(this).find("*[id='product-price']").text().slice(0, -2)
           )
         );
       });

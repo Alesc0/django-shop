@@ -409,6 +409,7 @@ def edit_product(request,id):
             data['description'] = cleaned_data['description']
             data['price'] = cleaned_data['price']
             data['stock'] = cleaned_data['stock']
+            data['promo'] = cleaned_data['promo']
             
             DBHandler.edit_product(**data)
             return redirect("admin")

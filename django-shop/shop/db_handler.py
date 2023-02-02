@@ -98,10 +98,11 @@ def create_product(name, description, price, stock,  image,user_id):
         data['sold_by'] = mg_user['company']
     return db.products.insert_one(data)
 
-def edit_product(id, name, description, price, stock,  image):
+def edit_product(id, name, description,promo, price, stock,  image):
     product = Product.objects.get(id=id)
     product.price = price
     product.stock = stock
+    product.promo = promo
     product.save()
     data = {}
     data['_id'] = product.id
@@ -136,6 +137,7 @@ def list_products(user_id=None,filter=None):
             if p.id == product["_id"]:
                 product["price"] = p.price
                 product["stock"] = p.stock
+                product["promo"] = p.promo
         final_products.append(product)
     return final_products
 
